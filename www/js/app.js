@@ -57,6 +57,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
 
+    .state('app.myBoard', {
+      url: "/myBoard",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/myBoard.html",
+          controller: 'BoardCtrl'
+        }
+      }
+    })
+
     .state('app.single', {
       url: "/playlists/:playlistId",
       views: {
