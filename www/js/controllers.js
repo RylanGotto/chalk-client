@@ -59,11 +59,7 @@ angular.module('starter.controllers', [])
       $scope.doAddPost = function() {
         console.log('Adding Post: ' + $scope.addPostData);
       };
-
-      /**
-       * All Modal Actions
-       */
-      // Close any open modal
+      // Close open add post modal
       $scope.closeAddPost = function() {
         $scope.modal.addPost.hide();
       };
@@ -83,4 +79,8 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
-});
+})
+
+.controller('BoardCtrl', ['$scope', 'Post', function($scope, Post) {
+    $scope.posts = Post.query();
+}]);

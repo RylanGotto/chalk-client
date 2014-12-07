@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "author" : "Will",
+    "content": "Hello, I am a post",
+    "privacyLvl": 3,
+    "timeout": 100
+  },
+  {
+    "id": 2,
+    "author" : "Will",
+    "content": "I am another post",
+    "privacyLvl": 3,
+    "timeout": 100
+  }
+]
