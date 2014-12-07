@@ -1,4 +1,4 @@
-<ion-view title="Board">
+<ion-view title="My Board">
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
@@ -7,6 +7,9 @@
             <ion-item ng-repeat="post in posts">
                 {{post.content}}
                 {{post.author}}
+            </ion-item>
+            <ion-item nav-clear menu-close ng-click="addPost()">
+                Add Post
             </ion-item>
         </ion-list>
     </ion-content>
