@@ -1,0 +1,8 @@
+Dec 12, 2104
+
+- Added registration, as well as ionic card element to display server response in reg modal.
+
+- Added login, as well as ionic card element to display server response in login modal. 
+	- Token is set to localStorage.jwttoken, set $http.defaults.headers.common['x-auth'] = ""; with token for restricted resources. 
+
+- bug: When the user object is returned it returns the password hash, however the datamodel is set not to.

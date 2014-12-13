@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $http, $ionicModal, $timeout) {
 
       // Set up the modal scope
       $scope.modal = {};
@@ -25,17 +25,76 @@ angular.module('starter.controllers', [])
       // TODO: make the login work.
       // Perform the login action when the user submits the login form
       $scope.doLogin = function() {
-        console.log('Doing login', $scope.loginData);
+        $scope.regData.fromServer = "g";
+        var dataObj = {
+                username: $scope.loginData.username,
+                password: $scope.loginData.password,
+            };
 
-        // Simulate a login delay. Remove this and replace with your login
-        // code if using a login system
+            var res = $http.post('http://localhost:8080/api/auth/login', dataObj);
+            res.success(function (data, status, headers, config) {
+                localStorage.jwttoken = data.tok;
+                $scope.regData.fromServer = "Welcome, " + data.usr.username;
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.regData.fromServer = data.message;
+            });
+
         $timeout(function() {
           $scope.closeLogin();
-        }, 1000);
+          
+        }, 3000);
       };
       $scope.closeLogin = function() {
         $scope.modal.login.hide();
       };
+
+      /**
+         * Register
+         */
+        $scope.regData = {};
+
+        $ionicModal.fromTemplateUrl('templates/register.html', {
+            scope: $scope
+        }).then(function (modal) {
+            $scope.modal.reg = modal;
+        });
+        $scope.register = function () {
+            $scope.modal.reg.show();
+        };
+
+
+        $scope.doReg = function () {
+            
+            var dataObj = {
+                username: $scope.regData.username,
+                password: $scope.regData.password,
+                confpass: $scope.regData.confPassword,
+                email: $scope.regData.email
+            };
+
+            //REGISTER A NEW USER
+            var res = $http.post('http://localhost:8080/api/auth/register', dataObj);
+            res.success(function (data, status, headers, config) {
+                $scope.regData.fromServer = data.message;
+                setTimeout(function(){
+                  $scope.regData.fromServer = "gg"
+              }, 2000);
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.regData.fromServer = data.message;
+            });
+
+                
+            $timeout(function () {
+                $scope.closeReg();
+            }, 20000);
+        };
+        $scope.closeReg = function () {
+            $scope.modal.reg.hide();
+        };
+
+
 
       /**
        * Add Post Modal
