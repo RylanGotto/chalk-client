@@ -39,6 +39,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             })
 
+
             .state('app.browse', {
                 url: "/browse",
                 views: {
@@ -47,12 +48,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 }
             })
-            .state('app.playlists', {
-                url: "/playlists",
+
+            .state('app.publishedboards', {
+                url: "/pubboards",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/playlists.html",
-                        controller: 'PlaylistsCtrl'
+                        templateUrl: "templates/publishedboards.html",
+                        controller: 'BoardCtrl'
                     }
                 }
             })
@@ -63,16 +65,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     'menuContent': {
                         templateUrl: "templates/myBoard.html",
                         controller: 'BoardCtrl'
-                    }
-                }
-            })
-
-            .state('app.single', {
-                url: "/playlists/:playlistId",
-                views: {
-                    'menuContent': {
-                        templateUrl: "templates/playlist.html",
-                        controller: 'PlaylistCtrl'
                     }
                 }
             });

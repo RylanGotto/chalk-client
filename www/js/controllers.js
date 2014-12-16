@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
     .controller('AppCtrl', function ($scope, $http, $ionicModal, $timeout) {
 
-        var serverUrl = "http://slightyused.info:8080";
+        var serverUrl = "http://localhost:8080";
 
         // Set up the modal scope
         $scope.modal = {};
@@ -12,11 +12,6 @@ angular.module('starter.controllers', [])
         $scope.responseData = {};
         $scope.loginData = {};
         $scope.regData = {}
-
-        $scope.refresh = function(){
-            $route.reload();
-        }
-
 
         $scope.fillTagField = function(){
             $scope.addboarddata.boardTag = localStorage.username + "'s Board";
@@ -207,6 +202,8 @@ angular.module('starter.controllers', [])
 
             }, 20000);
         };
+
+
         $scope.closeAddBoard = function () {
             $scope.modal.addBoard.hide();
         };
@@ -215,12 +212,20 @@ angular.module('starter.controllers', [])
     })
 
 
+    .controller('BoardCtrl', ['$scope', 'Post', 'Board', function ($scope, Post, Board) {
 
-    .controller('BoardCtrl', ['$scope', 'Post', function ($scope, Post) {
         $scope.posts = Post.query();
 
-        $scope.refresh = function (){
-            $scope.posts = Post.query();
-            $scope.$broadcast('scroll.refreshComplete');
+        $scope.refreshPost = function(){
+            $scope.posts = Post.query(function (){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        }
+
+        $scope.boards = Board.query();
+        $scope.refreshBoards = function(){
+            $scope.boards = Board.query(function (){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
         }
     }]);

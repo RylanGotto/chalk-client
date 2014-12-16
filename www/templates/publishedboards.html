@@ -1,0 +1,40 @@
+<ion-view title="My Published Boards">
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-content class="has-header">
+    <ion-refresher on-refresh="refreshBoards()" pulling-text='Pull to refresh'></ion-refresher>
+            <ion-item nav-clear menu-close ng-click="addBoard()">
+                Publish Board
+            </ion-item>
+        <ion-list>
+            <ion-item ng-repeat="board in boards | orderBy:'time':true">
+
+                    <div class="list card">
+
+                        <div class="item item-avatar">
+                            <img src="http://placehold.it/150x150" />
+                            <h2>{{board.tag}}</h2>
+                            <p>maxTTL: {{board.maxTTL}}</p>
+                            <p>timeout: {{board.timeout}}</p>
+                            <p>privacyLevel: {{board.privacyLevel}}</p>
+                            <p>published: {{board.time}}</p>
+                        </div>
+                </ion-item>
+                <div class="item item-body">
+                    <p>
+                    </p>
+                    <p>
+                        <a href="#" class="subdued">{{board.posts.length}} Posts</a>
+                    </p>
+                </div>
+
+
+                </div>
+            </ion-item>
+
+
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
