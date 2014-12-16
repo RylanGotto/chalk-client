@@ -5,4 +5,20 @@ Dec 12, 2104
 - Added login, as well as ionic card element to display server response in login modal. 
 	- Token is set to localStorage.jwttoken, set $http.defaults.headers.common['x-auth'] = ""; with token for restricted resources. 
 
-- bug: When the user object is returned it returns the password hash, however the datamodel is set not to.
+- bug: When the user object is returned it also returns the password hash, however the datamodel is set not to.
+
+Dec 13, 2014
+
+-  User id and username are saved to localStorage._id/.username
+
+Dec 14, 2014
+
+- create board works a board has to exists before a post can be created. When an account is created it also creates a board titled
+<usernames's board> obviously we can change this to something more robust!
+
+- create post works rudimentarily, it simply gets request from client and saves to an already created board. The features in add forums do work.
+	- The two features in the add post forum are simply to establish some sort of user use case.
+
+- Created a new service which gets all those posts currently on myBoard and displays it on refresh, we will have to look into how to use services more.
+
+

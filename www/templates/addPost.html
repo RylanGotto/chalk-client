@@ -6,17 +6,56 @@
         </div>
     </ion-header-bar>
     <ion-content>
-        <form ng-submit="addPost()">
+        <form ng-submit="doAddPost()">
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Post</span>
-                    <textarea ng-model="postdata.content" />
+                    <textarea ng-model="addPostData.content" />
                 </label>
+                <label class="item item-input">
+                    <span class="input-label">Tag</span>
+                    <textarea ng-model="addboarddata.boardTag" />
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Timeout Time</span>
+                    <input ng-model="addPostData.timeout" type="number">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Privacy Level</span>
+                <select ng-model="addPostData.privacyLevel" class="pull-right">
+                    <option ng-selected="selected">Public</option>
+                    <option>Private</option>
+                    <option>Friends</option>
+                </select>
+                    </label>
                 <label class="item">
                     <button class="button button-block button-positive" type="submit">Post</button>
                 </label>
+                <ul class="list">
+
+                    <li class="item item-checkbox">
+                        <label ng-click="addMyBoard()" class="checkbox">
+                            <input type="checkbox">
+                        </label>
+                        Post to my Board
+                    </li>
+                    <li ng-click="addBoard()" class="item item-checkbox">
+                        <label class="checkbox">
+                            <input type="checkbox">
+                        </label>
+                        Create a new Board
+                    </li>
+
+
+                </ul>
             </div>
         </form>
+        <div class="card">
+            <div class="item item-text-wrap">
+                {{responseData.fromServer}}
+            </div>
+        </div>
+
     </ion-content>
 </div>
 
