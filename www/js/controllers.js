@@ -2,33 +2,41 @@ angular.module('starter.controllers', [])
 
     .controller('AppCtrl', function ($scope, $http, $ionicModal, $timeout) {
 
+        var serverUrl = "http://slightyused.info:8080";
+
         // Set up the modal scope
         $scope.modal = {};
+
+        $scope.addPostData = {};
+        $scope.addboarddata = {};
         $scope.responseData = {};
+        $scope.loginData = {};
+        $scope.regData = {}
+
+        $scope.refresh = function(){
+            $route.reload();
+        }
 
 
-
-        $scope.addMyBoard = function () {
+        $scope.fillTagField = function(){
             $scope.addboarddata.boardTag = localStorage.username + "'s Board";
         }
+
+
         /**
          * Login modal
          */
-            // Form data for the login modal
-        $scope.loginData = {};
-
         // Create the login modal that we will use later
         $ionicModal.fromTemplateUrl('templates/login.html', {
             scope: $scope
         }).then(function (modal) {
             $scope.modal.login = modal;
         });
-
         // Open the login modal
         $scope.login = function () {
             $scope.modal.login.show();
         };
-        // TODO: make the login work.
+
         // Perform the login action when the user submits the login form
         $scope.doLogin = function () {
             var dataObj = {
@@ -36,7 +44,7 @@ angular.module('starter.controllers', [])
                 password: $scope.loginData.password
             };
             $http.defaults.headers.common['x-auth'] = "";
-            var res = $http.post('http://localhost:8080/api/auth/login', dataObj);
+            var res = $http.post(serverUrl + '/api/auth/login', dataObj);
             res.success(function (data, status, headers, config) {
                 localStorage.jwttoken = data.tok;
                 localStorage.username = data.usr.username;
@@ -52,25 +60,30 @@ angular.module('starter.controllers', [])
 
             }, 3000);
         };
+
         $scope.closeLogin = function () {
             $scope.modal.login.hide();
         };
 
+
+
+
+
+
         /**
          * Register
          */
-        $scope.regData = {};
+        ;
 
         $ionicModal.fromTemplateUrl('templates/register.html', {
             scope: $scope
         }).then(function (modal) {
             $scope.modal.reg = modal;
         });
+
         $scope.register = function () {
             $scope.modal.reg.show();
         };
-
-
 
         $scope.doReg = function () {
 
@@ -82,7 +95,7 @@ angular.module('starter.controllers', [])
             };
 
             $http.defaults.headers.common['x-auth'] = "";
-            var res = $http.post('http://localhost:8080/api/auth/register', dataObj);
+            var res = $http.post(serverUrl + '/api/auth/register', dataObj);
             res.success(function (data, status, headers, config) {
                 $scope.responseData.fromServer = data.message;
             });
@@ -95,17 +108,20 @@ angular.module('starter.controllers', [])
                 $scope.closeReg();
             }, 20000);
         };
+
         $scope.closeReg = function () {
             $scope.modal.reg.hide();
         };
 
 
+
+
+
+
         /**
          * Add Post
          */
-            // addPOst form data
-        $scope.addPostData = {};
-        $scope.addboarddata = {};
+        // addPOst form data
 
         // Create the addPost modal
         $ionicModal.fromTemplateUrl('templates/addPost.html', {
@@ -121,7 +137,6 @@ angular.module('starter.controllers', [])
 
         };
 
-
         $scope.doAddPost = function () {
             var dataObj = {
                 content: $scope.addPostData.content,
@@ -132,7 +147,7 @@ angular.module('starter.controllers', [])
             console.log($scope.addPostData.content);
 
             $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.post('http://localhost:8080/api/posts', dataObj);
+            var res = $http.post(serverUrl + '/api/posts', dataObj);
             res.success(function (data, status, headers, config) {
                 $scope.responseData.fromServer = data.message;
             });
@@ -151,6 +166,11 @@ angular.module('starter.controllers', [])
         };
 
 
+
+
+
+
+
         /**
          * Add Board
          */
@@ -163,8 +183,6 @@ angular.module('starter.controllers', [])
             $scope.modal.addBoard.show();
         };
 
-
-
         $scope.doAddBoard = function () {
 
             var dataObj = {
@@ -175,7 +193,7 @@ angular.module('starter.controllers', [])
             };
             console.log(dataObj);
             $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.post('http://localhost:8080/api/boards', dataObj);
+            var res = $http.post(serverUrl + '/api/boards', dataObj);
             res.success(function (data, status, headers, config) {
                $scope.responseData.fromServer = data.message;
             });
@@ -198,33 +216,11 @@ angular.module('starter.controllers', [])
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    .controller('PlaylistsCtrl', function ($scope) {
-        $scope.playlists = [
-            {title: 'Reggae', id: 1},
-            {title: 'Chill', id: 2},
-            {title: 'Dubstep', id: 3},
-            {title: 'Indie', id: 4},
-            {title: 'Rap', id: 5},
-            {title: 'Cowbell', id: 6}
-        ];
-    })
-
-    .controller('PlaylistCtrl', function ($scope, $stateParams) {
-    })
-
     .controller('BoardCtrl', ['$scope', 'Post', function ($scope, Post) {
         $scope.posts = Post.query();
+
+        $scope.refresh = function (){
+            $scope.posts = Post.query();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
     }]);
