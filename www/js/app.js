@@ -59,6 +59,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             })
 
+            .state('app.viewposts', {
+                url: "/viewposts",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/viewposts.html"
+                    }
+                }
+            })
+
             .state('app.myBoard', {
                 url: "/myBoard",
                 views: {

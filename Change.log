@@ -21,21 +21,24 @@ Dec 14, 2014
 
 - Created a new service which gets all those posts currently on myBoard and displays it on refresh, we will have to look into how to use services more.
 
-<<<<<<< HEAD
-- added pull down to update posts on myBoard
-=======
-- added pull down to refresh posts on myBoard
->>>>>>> cb1b8086d51131d7f711e52b35b54089ad65df0b
-
 - added a potential layout for posts, it is the stock layout from ionic
 
-Dec 15, 2014
+Dec 16, 2014
 
 - Added a page to view boards published by the user.
 
 - Added sorting of the server responses so new posts and boards show up at the top of the page. Sorting is done by date and time.
 
 - Added pull down to update new boards published by user.
+
+- Search now displays all the users registered in the system.
+
+- Added clicking on a published board to view its posts
+
+- added base comments
+
+
+
 
 
 

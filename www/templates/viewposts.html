@@ -1,15 +1,14 @@
-
-<ion-view title="My Board">
+<ion-view title="{{addboarddata.boardTag}}">
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header">
-    <ion-refresher on-refresh="refreshPost()" pulling-text='Pull to refresh'></ion-refresher>
+    <ion-refresher on-refresh="refreshPostsView()" pulling-text='Pull to refresh'></ion-refresher>
     <ion-item nav-clear menu-close ng-click="addPost()">
                 Add Post
             </ion-item>
         <ion-list>
-            <ion-item ng-repeat="post in posts ">
+            <ion-item ng-repeat="post in posts">
                         <ion-item ng-repeat="k in post.posts | orderBy:'time':true">
                             <div class="list card">
 

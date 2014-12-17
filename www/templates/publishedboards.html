@@ -9,17 +9,17 @@
             </ion-item>
         <ion-list>
             <ion-item ng-repeat="board in boards | orderBy:'time':true">
-
-                    <div class="list card">
-
-                        <div class="item item-avatar">
-                            <img src="http://placehold.it/150x150" />
-                            <h2>{{board.tag}}</h2>
-                            <p>maxTTL: {{board.maxTTL}}</p>
-                            <p>timeout: {{board.timeout}}</p>
-                            <p>privacyLevel: {{board.privacyLevel}}</p>
-                            <p>published: {{board.time}}</p>
-                        </div>
+                    <div ng-click="viewBoard(board._id, board.tag)" class="list card">
+                        <a href="">
+                            <div class="item item-avatar">
+                                <img src="http://placehold.it/150x150" />
+                                <h2>{{board.tag}}</h2>
+                                <p>maxTTL: {{board.maxTTL}}</p>
+                                <p>timeout: {{board.timeout}}</p>
+                                <p>privacyLevel: {{board.privacyLevel}}</p>
+                                <p>published: {{board.time}}</p>
+                            </div>
+                        </a>
                 </ion-item>
                 <div class="item item-body">
                     <p>

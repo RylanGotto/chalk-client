@@ -1,22 +1,52 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $http, $ionicModal, $timeout) {
+    .controller('AppCtrl', function ($scope, $location, $http, $ionicModal, $timeout, Users) {
 
         var serverUrl = "http://localhost:8080";
 
-        // Set up the modal scope
+        // data
         $scope.modal = {};
-
+        $scope.boardData = {};
         $scope.addPostData = {};
         $scope.addboarddata = {};
         $scope.responseData = {};
         $scope.loginData = {};
         $scope.regData = {}
 
+        //Utilites
         $scope.fillTagField = function(){
             $scope.addboarddata.boardTag = localStorage.username + "'s Board";
         }
 
+        $scope.users = Users.query(); //populate users for search
+
+        $scope.viewBoard = function(id, tag){ //view and board and its posts
+            $location.path("/app/viewposts");
+            $scope.addboarddata.boardTag = tag;
+            $scope.addboarddata.id = id;
+
+            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
+            var res = $http.get(serverUrl + '/api/boards/' + id);
+            res.success(function (data, status, headers, config) {
+               $scope.posts = data;
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+        }
+
+        $scope.refreshPostsView = function(){ //refresh the board posts view template
+
+            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
+            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.id);
+            res.success(function (data, status, headers, config) {
+               $scope.posts = data;
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+            $scope.$broadcast('scroll.refreshComplete');
+        }
 
         /**
          * Login modal
@@ -208,7 +238,6 @@ angular.module('starter.controllers', [])
             $scope.modal.addBoard.hide();
         };
 
-
     })
 
 
@@ -216,16 +245,22 @@ angular.module('starter.controllers', [])
 
         $scope.posts = Post.query();
 
-        $scope.refreshPost = function(){
+        $scope.refreshPost = function(){ //refresh posts on myboard
             $scope.posts = Post.query(function (){
                 $scope.$broadcast('scroll.refreshComplete');
             });
         }
 
         $scope.boards = Board.query();
-        $scope.refreshBoards = function(){
+
+        $scope.refreshBoards = function(){ //refresh published boards
             $scope.boards = Board.query(function (){
                 $scope.$broadcast('scroll.refreshComplete');
             });
         }
+
+
+
+
+
     }]);
