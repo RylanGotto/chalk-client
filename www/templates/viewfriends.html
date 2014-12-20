@@ -1,0 +1,25 @@
+<ion-view title="{{addboarddata.boardTag}}">
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-content class="has-header">
+    <ion-refresher on-refresh="refreshFriendsView()" pulling-text='Pull to refresh'></ion-refresher>
+    <ion-item nav-clear menu-close ng-click="addPost()">
+                Add Post
+            </ion-item>
+        <ion-list>
+
+            <ion-item ng-repeat="user in friends.friends">
+                <a href="" ng-click="viewFriendsBoard(user._id, user.username)">
+                            <div class="list card">
+                                <div class="item item-avatar">
+                                    <img src="http://placehold.it/140x100">
+                                   {{user.username}}
+                                </div>
+                            </div>
+                </a>
+            </ion-item>
+            
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $location, $http, $ionicModal, $timeout, Users) {
+    .controller('AppCtrl', function ($scope, $location, $http, $ionicModal, $timeout, Users, Post, Board, Friends) {
 
         var serverUrl = "http://localhost:8080";
 
@@ -13,32 +13,36 @@ angular.module('starter.controllers', [])
         $scope.loginData = {};
         $scope.regData = {}
 
+
+
+
+
+
+
+
         //Utilites
+        
+        $scope.posts = Post.query();  //populate posts on myBoard.
+        $scope.users = Users.query(); //populate users for search.
+        $scope.boards = Board.query(); //populate board on published boards page.
+        $scope.friends = Friends.charge();
+
         $scope.fillTagField = function(){
             $scope.addboarddata.boardTag = localStorage.username + "'s Board";
         }
 
-        $scope.users = Users.query(); //populate users for search
 
-        $scope.viewBoard = function(id, tag){ //view and board and its posts
-            $location.path("/app/viewposts");
-            $scope.addboarddata.boardTag = tag;
-            $scope.addboarddata.id = id;
 
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.get(serverUrl + '/api/boards/' + id);
-            res.success(function (data, status, headers, config) {
-               $scope.posts = data;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-        }
+
+
+
+
+
+
 
         $scope.refreshPostsView = function(){ //refresh the board posts view template
-
             $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.id);
+            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
             res.success(function (data, status, headers, config) {
                $scope.posts = data;
             });
@@ -47,6 +51,59 @@ angular.module('starter.controllers', [])
             });
             $scope.$broadcast('scroll.refreshComplete');
         }
+
+        $scope.refreshPost = function(){ //refresh posts on myboard
+            $scope.posts = Post.query(function (){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        }
+
+
+        $scope.refreshBoards = function(){ //refresh published boards
+            $scope.boards = Board.query(function (){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        }
+
+        $scope.refreshFriendsView = function(){ //refresh published boards
+            $scope.friends = Friends.charge(function (){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        }
+
+
+        $scope.viewBoard = function(id, tag){ //view a boards posts on click
+
+            $location.path("/app/viewposts");
+            $scope.addboarddata.boardTag = tag;
+
+            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
+            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
+            res.success(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+        }
+
+
+        $scope.viewFriendsBoard = function(id, tag){ //view a boards posts on click
+            alert(id + tag);
+            $location.path("/app/viewposts");
+            $scope.addboarddata.boardTag = tag + "'s Board";
+            $scope.addboarddata.id = id;
+
+            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
+            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
+            res.success(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.posts = data;
+            });
+        }
+
 
         /**
          * Login modal
@@ -169,7 +226,6 @@ angular.module('starter.controllers', [])
                 timeout: $scope.addPostData.timeout,
                 tag: $scope.addboarddata.boardTag
             };
-            console.log($scope.addPostData.content);
 
             $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
             var res = $http.post(serverUrl + '/api/posts', dataObj);
@@ -216,7 +272,6 @@ angular.module('starter.controllers', [])
                 tag: $scope.addboarddata.boardTag,
                 maxTTL: $scope.addboarddata.maxTTL
             };
-            console.log(dataObj);
             $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
             var res = $http.post(serverUrl + '/api/boards', dataObj);
             res.success(function (data, status, headers, config) {
@@ -238,29 +293,31 @@ angular.module('starter.controllers', [])
             $scope.modal.addBoard.hide();
         };
 
+        /*
+         Add friend
+         */
+        $scope.addFriend = function(id, friendname){
+            var dataObj = {
+                friendid: id,
+                frndname: friendname
+
+            };
+            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
+            var res = $http.put(serverUrl + '/api/users/' + localStorage.userid, dataObj);
+            res.success(function (data, status, headers, config) {
+                alert(data.message);
+            });
+            res.error(function (data, status, headers, config) {
+                $scope.responseData.fromServer = data.message;
+            });
+        }
+
+
+
+
+
+
     })
 
 
-    .controller('BoardCtrl', ['$scope', 'Post', 'Board', function ($scope, Post, Board) {
-
-        $scope.posts = Post.query();
-
-        $scope.refreshPost = function(){ //refresh posts on myboard
-            $scope.posts = Post.query(function (){
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-        }
-
-        $scope.boards = Board.query();
-
-        $scope.refreshBoards = function(){ //refresh published boards
-            $scope.boards = Board.query(function (){
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-        }
-
-
-
-
-
-    }]);
+    ;

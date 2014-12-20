@@ -53,8 +53,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: "/pubboards",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/publishedboards.html",
-                        controller: 'BoardCtrl'
+                        templateUrl: "templates/publishedboards.html"
                     }
                 }
             })
@@ -68,12 +67,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 }
             })
 
+            .state('app.viewfriends', {
+                url: "/viewfriends",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/viewfriends.html"
+                    }
+                }
+            })
+
             .state('app.myBoard', {
                 url: "/myBoard",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/myBoard.html",
-                        controller: 'BoardCtrl'
+                        templateUrl: "templates/myBoard.html"
                     }
                 }
             });

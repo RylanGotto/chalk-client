@@ -18,6 +18,14 @@ angular.module('starter.services', ['ngResource'])
             });
         }])
 
+    .factory('Friends', ['$resource',
+        function ($resource) {
+            var serverUrl = "http://localhost:8080";
+            return $resource(serverUrl + '/api/users', {}, {
+                charge: {method: 'POST', headers:{'x-auth':localStorage.jwttoken } }
+            });
+        }])
+
 //get all published boards for a logged in user
     .factory('Board', ['$resource',
         function ($resource) {
@@ -26,6 +34,7 @@ angular.module('starter.services', ['ngResource'])
                 query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
             });
         }]);
+
 
 
 
