@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $location, $http, $ionicModal, $timeout, Users, Post, Board, Friends) {
+    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends) {
 
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -26,6 +26,7 @@ angular.module('starter.controllers', [])
         $scope.users = Users.query(); //populate users for search.
         $scope.boards = Board.query(); //populate board on published boards page.
         $scope.friends = Friends.charge();
+        $scope.loginData.username = localStorage.username;
 
         $scope.fillTagField = function(){
             $scope.addboarddata.boardTag = localStorage.username + "'s Board";
@@ -132,6 +133,7 @@ angular.module('starter.controllers', [])
                 localStorage.username = data.usr.username;
                 localStorage.userid = data.usr._id;
                 $scope.responseData.fromServer = "Welcome, " + data.usr.username;
+                $scope.loginData.username = data.usr.username;
             });
             res.error(function (data, status, headers, config) {
                 $scope.responseData.fromServer = data.message;
@@ -139,7 +141,10 @@ angular.module('starter.controllers', [])
 
             $timeout(function () {
                 $scope.closeLogin();
-
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                });
+                $location.url('/app/myBoard');
             }, 3000);
         };
 
