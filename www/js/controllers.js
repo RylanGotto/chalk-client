@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
     .controller('AppCtrl', function ($scope, $location, $http, $ionicModal, $timeout, Users, Post, Board, Friends) {
 
-        var serverUrl = "http://localhost:8080";
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         // data
         $scope.modal = {};

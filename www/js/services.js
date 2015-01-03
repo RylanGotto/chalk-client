@@ -12,7 +12,7 @@ angular.module('starter.services', ['ngResource'])
 //get all users for search potentially
     .factory('Users', ['$resource',
         function ($resource) {
-            var serverUrl = "http://localhost:8080";
+            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
             return $resource(serverUrl + '/api/users', {}, {
                 query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
             });
@@ -20,7 +20,7 @@ angular.module('starter.services', ['ngResource'])
 
     .factory('Friends', ['$resource',
         function ($resource) {
-            var serverUrl = "http://localhost:8080";
+            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
             return $resource(serverUrl + '/api/users', {}, {
                 charge: {method: 'POST', headers:{'x-auth':localStorage.jwttoken } }
             });
@@ -29,7 +29,7 @@ angular.module('starter.services', ['ngResource'])
 //get all published boards for a logged in user
     .factory('Board', ['$resource',
         function ($resource) {
-            var serverUrl = "http://localhost:8080";
+            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
             return $resource(serverUrl + '/api/boards', {}, {
                 query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
             });
