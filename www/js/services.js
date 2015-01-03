@@ -3,7 +3,7 @@ angular.module('starter.services', ['ngResource'])
 //get all posts for my board
     .factory('Post', ['$resource',
         function ($resource) {
-            var serverUrl = "http://localhost:8080";
+            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
             return $resource(serverUrl + '/api/myboard', {}, {
                 query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
             });
