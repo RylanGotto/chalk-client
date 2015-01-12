@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends) {
+    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService,  $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $ionicModal, $timeout, Users, Post, Board, Friends) {
 
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -322,8 +322,6 @@ angular.module('starter.controllers', [])
 
 
 
-    })
-    .controller('cordovaCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $http) {
         $scope.notifications = [];
 
         // call to register automatically upon device ready
@@ -338,7 +336,7 @@ angular.module('starter.controllers', [])
 
             if (ionic.Platform.isAndroid()) {
                 config = {
-                    "senderID": "YOUR_GCM_PROJECT_ID" // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
+                    "senderID": "393267053393" // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
                 };
             }
             else if (ionic.Platform.isIOS()) {

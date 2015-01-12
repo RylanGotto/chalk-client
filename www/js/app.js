@@ -23,11 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 
-            .state('reg', {
-                url: "/reg",
-                templateUrl: "templates/regDevice.html",
-                controller: 'cordovaCtrl'
-            })
+
 
             .state('app', {
                 url: "/app",
