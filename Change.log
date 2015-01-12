@@ -45,5 +45,27 @@ Dec 19, 2014
 - added a friends tab that will show all users currently friends with the logged in user, click on a friends card to go
 to their my board.
 
+Jan 11, 2015
+
+- Changed file names so everything contains camel case
+
+- added ngCordova, path: lib/ng-cordova.js
+
+- installed ionic plugins as follows:
+	$ ionic plugin add org.apache.cordova.console
+    $ ionic plugin add org.apache.cordova.device
+    $ ionic plugin add org.apache.cordova.dialogs
+    $ ionic plugin add org.apache.cordova.file
+    $ ionic plugin add org.apache.cordova.media
+    $ ionic plugin add https://github.com/phonegap-build/PushPlugin
+    $ ionic plugin add https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.gi
+
+- added view for testing registering a device
+
+- created new controller for cordova plugins, 'cordovaCtrl'
+
+- created new state for registering a device view
+
+
 
 

@@ -23,6 +23,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 
+            .state('reg', {
+                url: "/reg",
+                templateUrl: "templates/regDevice.html",
+                controller: 'cordovaCtrl'
+            })
+
             .state('app', {
                 url: "/app",
                 abstract: true,
@@ -40,6 +46,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             })
 
 
+
+
             .state('app.browse', {
                 url: "/browse",
                 views: {
@@ -53,7 +61,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: "/pubboards",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/publishedboards.html"
+                        templateUrl: "templates/publishedBoards.html"
                     }
                 }
             })
@@ -62,7 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: "/viewposts",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/viewposts.html"
+                        templateUrl: "templates/viewPosts.html"
                     }
                 }
             })
@@ -71,7 +79,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 url: "/viewfriends",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/viewfriends.html"
+                        templateUrl: "templates/viewFriends.html"
                     }
                 }
             })
