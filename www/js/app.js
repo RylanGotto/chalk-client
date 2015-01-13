@@ -23,6 +23,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 
+            .state('reg', {
+                url: "/reg",
+                abstract: true,
+                templateUrl: "templates/menu.html",
+                controller: 'CordovaCtrl'
+            })
+            .state('reg.dev', {
+                url: "/dev",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/reg.html"
+                    }
+                }
+            })
 
 
             .state('app', {
@@ -32,6 +46,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 controller: 'AppCtrl'
             })
 
+
             .state('app.search', {
                 url: "/search",
                 views: {
@@ -40,8 +55,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     }
                 }
             })
-
-
 
 
             .state('app.browse', {

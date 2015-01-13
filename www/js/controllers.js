@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService,  $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $ionicModal, $timeout, Users, Post, Board, Friends) {
+    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends) {
 
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -318,7 +318,8 @@ angular.module('starter.controllers', [])
         }
 
 
-
+    })
+    .controller('CordovaCtrl', function($scope, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $http) {
 
 
 
@@ -484,6 +485,6 @@ angular.module('starter.controllers', [])
         }
 
 
-    })
+    });
 
 
