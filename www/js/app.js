@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
@@ -23,12 +23,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     .config(function ($stateProvider, $urlRouterProvider) {
         $stateProvider
 
+            .state('reg', {
+                url: "/reg",
+                abstract: true,
+                templateUrl: "templates/menu.html",
+                controller: 'CordovaCtrl'
+            })
+            .state('reg.dev', {
+                url: "/dev",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/reg.html"
+                    }
+                }
+            })
+
+
             .state('app', {
                 url: "/app",
                 abstract: true,
                 templateUrl: "templates/menu.html",
                 controller: 'AppCtrl'
             })
+
 
             .state('app.search', {
                 url: "/search",
@@ -53,7 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: "/pubboards",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/publishedboards.html"
+                        templateUrl: "templates/publishedBoards.html"
                     }
                 }
             })
@@ -62,7 +79,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: "/viewposts",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/viewposts.html"
+                        templateUrl: "templates/viewPosts.html"
                     }
                 }
             })
@@ -71,7 +88,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                 url: "/viewfriends",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/viewfriends.html"
+                        templateUrl: "templates/viewFriends.html"
                     }
                 }
             })

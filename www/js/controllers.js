@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-    .controller('AppCtrl', function ($scope, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends) {
+    .controller('AppCtrl', function ($scope, $window, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform) {
 
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -21,6 +21,7 @@ angular.module('starter.controllers', [])
 
 
         //Utilites
+        
         $scope.posts = Post.query();  //populate posts on myBoard.
         $scope.users = Users.query(); //populate users for search.
         $scope.boards = Board.query(); //populate board on published boards page.
@@ -121,7 +122,6 @@ angular.module('starter.controllers', [])
 
         // Perform the login action when the user submits the login form
         $scope.doLogin = function () {
-            console.log('begin login');
             var dataObj = {
                 username: $scope.loginData.username,
                 password: $scope.loginData.password
@@ -134,23 +134,23 @@ angular.module('starter.controllers', [])
                 localStorage.userid = data.usr._id;
                 $scope.responseData.fromServer = "Welcome, " + data.usr.username;
                 $scope.loginData.username = data.usr.username;
-
-            }).then( function() {
-                console.log('after login attempt ' + localStorage.jwttoken);
-                $scope.posts = Post.query();
-                $scope.closeLogin();
-                $ionicViewService.nextViewOptions({
-                    disableBack: true
-                });
-                $location.url('/app/myBoard');
             });
             res.error(function (data, status, headers, config) {
                 $scope.responseData.fromServer = data.message;
             });
 
             $timeout(function () {
+                $scope.closeLogin();
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                });
+		$location.url('/app/myBoard');
+            }, 2000);
 
-            }, 3000);
+ 	   $timeout(function () {
+		$window.location.reload();
+            }, 2000);
+	
         };
 
         $scope.closeLogin = function () {
@@ -232,8 +232,6 @@ angular.module('starter.controllers', [])
         // Open the addpost modal
         $scope.addPost = function () {
             $scope.modal.addPost.show();
-
-
         };
 
         $scope.doAddPost = function () {
