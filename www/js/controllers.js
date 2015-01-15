@@ -21,7 +21,6 @@ angular.module('starter.controllers', [])
 
 
         //Utilites
-        
         $scope.posts = Post.query();  //populate posts on myBoard.
         $scope.users = Users.query(); //populate users for search.
         $scope.boards = Board.query(); //populate board on published boards page.
@@ -122,6 +121,7 @@ angular.module('starter.controllers', [])
 
         // Perform the login action when the user submits the login form
         $scope.doLogin = function () {
+            console.log('begin login');
             var dataObj = {
                 username: $scope.loginData.username,
                 password: $scope.loginData.password
@@ -134,17 +134,22 @@ angular.module('starter.controllers', [])
                 localStorage.userid = data.usr._id;
                 $scope.responseData.fromServer = "Welcome, " + data.usr.username;
                 $scope.loginData.username = data.usr.username;
+
+            }).then( function() {
+                console.log('after login attempt ' + localStorage.jwttoken);
+                $scope.posts = Post.query();
+                $scope.closeLogin();
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                });
+                $location.url('/app/myBoard');
             });
             res.error(function (data, status, headers, config) {
                 $scope.responseData.fromServer = data.message;
             });
 
             $timeout(function () {
-                $scope.closeLogin();
-                $ionicViewService.nextViewOptions({
-                    disableBack: true
-                });
-                $location.url('/app/myBoard');
+
             }, 3000);
         };
 
@@ -154,22 +159,17 @@ angular.module('starter.controllers', [])
 
         /**
          * Logout
+         * Clears the local storage and redirects to base url
          */
         $scope.logout = function() {
             localStorage.clear();
             $location.url('/');
-        }
-
-
-
-
-
+        };
 
         /**
          * Register
+         * Opens register modal
          */
-        ;
-
         $ionicModal.fromTemplateUrl('templates/register.html', {
             scope: $scope
         }).then(function (modal) {
@@ -180,6 +180,10 @@ angular.module('starter.controllers', [])
             $scope.modal.reg.show();
         };
 
+        /**
+         * Completes the registration with the inputted form data
+         * Performs the registration process
+         */
         $scope.doReg = function () {
 
             var dataObj = {

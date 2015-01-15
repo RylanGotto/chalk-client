@@ -4,8 +4,9 @@ angular.module('starter.services', ['ngResource'])
     .factory('Post', ['$resource',
         function ($resource) {
             var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+            console.log('fuck ' + localStorage.jwttoken);
             return $resource(serverUrl + '/api/myboard', {}, {
-                query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
+                query: {method: 'GET', isArray: true, headers: {'x-auth':localStorage.jwttoken } }
             });
         }])
 
