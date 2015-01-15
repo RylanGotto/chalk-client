@@ -159,6 +159,14 @@ angular.module('starter.controllers', [])
             $scope.modal.login.hide();
         };
 
+        /**
+         * Logout
+         */
+        $scope.logout = function() {
+            localStorage.clear();
+            $location.url('/');
+        }
+
 
 
 
