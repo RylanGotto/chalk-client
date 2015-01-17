@@ -1,5 +1,3 @@
-
-
 angular.module('main.controllers', [])
 
     .controller('InitCtrl', ['$scope', '$location', '$window', '$timeout', '$ionicModal', '$ionicViewService', '$cordovaToast', 'UserLoginService', 'AuthenticationService', 'RegistrationService',
