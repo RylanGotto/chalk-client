@@ -144,34 +144,6 @@ angular.module('main.controllers', [])
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
                 });
-<<<<<<< HEAD
-		$location.url('/app/myBoard');
-            }, 2000);
-
- 	   $timeout(function () {
-		$window.location.reload();
-            }, 2000);
-	
-        };
-
-
-        $scope.closeLogin = function () {
-            $scope.modal.login.hide();
-        };
-
-        /**
-         * Logout
-         */
-        $scope.logout = function() {
-            localStorage.clear();
-            $location.url('/');
-        }
-
-
-
-
-=======
->>>>>>> rylan
 
                 BoardService.getPublishedBoards().success(function (data, status, headers, config) {
                     $scope.boards = data;
