@@ -1,338 +1,285 @@
-angular.module('starter.controllers', [])
-
-    .controller('AppCtrl', function ($scope, $window, $location, $http, $ionicViewService, $ionicModal, $timeout, Users, Post, Board, Friends, $cordovaPush, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform) {
-
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
-
-        // data
-        $scope.modal = {};
-        $scope.boardData = {};
-        $scope.addPostData = {};
-        $scope.addboarddata = {};
-        $scope.responseData = {};
-        $scope.loginData = {};
-        $scope.regData = {}
 
 
+angular.module('main.controllers', [])
 
+    .controller('InitCtrl', ['$scope', '$location', '$window', '$timeout', '$ionicModal', '$ionicViewService', '$cordovaToast', 'UserLoginService', 'AuthenticationService', 'RegistrationService',
+        function InitCtrl($scope, $location, $window, $timeout, $ionicModal, $ionicViewService, $cordovaToast, UserLoginService, AuthenticationService, RegistrationService) {
+            $scope.modal = {};
+            $scope.regData = {};
 
-
-
-
-
-        //Utilites
-        
-        $scope.posts = Post.query();  //populate posts on myBoard.
-        $scope.users = Users.query(); //populate users for search.
-        $scope.boards = Board.query(); //populate board on published boards page.
-        $scope.friends = Friends.charge();
-        $scope.loginData.username = localStorage.username;
-
-        $scope.fillTagField = function(){
-            $scope.addboarddata.boardTag = localStorage.username + "'s Board";
-        }
-
-
-
-
-
-
-
-
-
-
-        $scope.refreshPostsView = function(){ //refresh the board posts view template
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
-            res.success(function (data, status, headers, config) {
-               $scope.posts = data;
+            $ionicModal.fromTemplateUrl('templates/register.html', {
+                scope: $scope
+            }).then(function (modal) {
+                $scope.modal.reg = modal;
             });
-            res.error(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-            $scope.$broadcast('scroll.refreshComplete');
-        }
 
-        $scope.refreshPost = function(){ //refresh posts on myboard
-            $scope.posts = Post.query(function (){
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-        }
-
-
-        $scope.refreshBoards = function(){ //refresh published boards
-            $scope.boards = Board.query(function (){
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-        }
-
-        $scope.refreshFriendsView = function(){ //refresh published boards
-            $scope.friends = Friends.charge(function (){
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-        }
-
-
-        $scope.viewBoard = function(id, tag){ //view a boards posts on click
-
-            $location.path("/app/viewposts");
-            $scope.addboarddata.boardTag = tag;
-
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
-            res.success(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-        }
-
-
-        $scope.viewFriendsBoard = function(id, tag){ //view a boards posts on click
-            alert(id + tag);
-            $location.path("/app/viewposts");
-            $scope.addboarddata.boardTag = tag + "'s Board";
-            $scope.addboarddata.id = id;
-
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.get(serverUrl + '/api/boards/' + $scope.addboarddata.boardTag);
-            res.success(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.posts = data;
-            });
-        }
-
-
-        /**
-         * Login modal
-         */
-        // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal.login = modal;
-        });
-        // Open the login modal
-        $scope.login = function () {
-            $scope.modal.login.show();
-        };
-
-        // Perform the login action when the user submits the login form
-        $scope.doLogin = function () {
-            var dataObj = {
-                username: $scope.loginData.username,
-                password: $scope.loginData.password
+            $scope.register = function () {
+                $scope.modal.reg.show();
             };
-            $http.defaults.headers.common['x-auth'] = "";
-            var res = $http.post(serverUrl + '/api/auth/login', dataObj);
-            res.success(function (data, status, headers, config) {
-                localStorage.jwttoken = data.tok;
-                localStorage.username = data.usr.username;
-                localStorage.userid = data.usr._id;
-                $scope.responseData.fromServer = "Welcome, " + data.usr.username;
-                $scope.loginData.username = data.usr.username;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
-            });
 
-            $timeout(function () {
-                $scope.closeLogin();
-                $ionicViewService.nextViewOptions({
-                    disableBack: true
+
+
+            $scope.doReg = function () {
+
+                var dataObj = {
+                    username: $scope.regData.username,
+                    password: $scope.regData.password,
+                    confpass: $scope.regData.confPassword,
+                    email: $scope.regData.email
+                };
+                console.log(dataObj);
+
+                RegistrationService.register(dataObj).success(function(data){
+                    $scope.fromServer = data.message;
+                }).error(function(data){
+                    $scope.fromServer = data.message;
+                    console.log(data);
                 });
-		$location.url('/app/myBoard');
-            }, 2000);
 
- 	   $timeout(function () {
-		$window.location.reload();
-            }, 2000);
-	
-        };
 
-        $scope.closeLogin = function () {
-            $scope.modal.login.hide();
-        };
-
-        /**
-         * Logout
-         * Clears the local storage and redirects to base url
-         */
-        $scope.logout = function() {
-            localStorage.clear();
-            $location.url('/');
-        };
-
-        /**
-         * Register
-         * Opens register modal
-         */
-        $ionicModal.fromTemplateUrl('templates/register.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal.reg = modal;
-        });
-
-        $scope.register = function () {
-            $scope.modal.reg.show();
-        };
-
-        /**
-         * Completes the registration with the inputted form data
-         * Performs the registration process
-         */
-        $scope.doReg = function () {
-
-            var dataObj = {
-                username: $scope.regData.username,
-                password: $scope.regData.password,
-                confpass: $scope.regData.confPassword,
-                email: $scope.regData.email
+                $timeout(function () {
+                    $scope.closeReg();
+                }, 20000);
             };
 
-            $http.defaults.headers.common['x-auth'] = "";
-            var res = $http.post(serverUrl + '/api/auth/register', dataObj);
-            res.success(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
-            });
-
-
-            $timeout(function () {
-                $scope.closeReg();
-            }, 20000);
-        };
-
-        $scope.closeReg = function () {
-            $scope.modal.reg.hide();
-        };
-
-
-
-
-
-
-        /**
-         * Add Post
-         */
-        // addPOst form data
-
-        // Create the addPost modal
-        $ionicModal.fromTemplateUrl('templates/addPost.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal.addPost = modal;
-        });
-
-        // Open the addpost modal
-        $scope.addPost = function () {
-            $scope.modal.addPost.show();
-        };
-
-        $scope.doAddPost = function () {
-            var dataObj = {
-                content: $scope.addPostData.content,
-                privacyLevel: $scope.addPostData.privacyLevel,
-                timeout: $scope.addPostData.timeout,
-                tag: $scope.addboarddata.boardTag
+            $scope.closeReg = function () {
+                $scope.modal.reg.hide();
             };
 
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.post(serverUrl + '/api/posts', dataObj);
-            res.success(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
+
+
+
+            //Admin User Controller (login, logout)
+            $scope.doLogin = function(username, password) {
+                if (username !== undefined && password !== undefined) {
+
+                    UserLoginService.logIn(username, password).success(function (data) {
+                        AuthenticationService.isLogged = true;
+                        localStorage.username = data.usr.username;
+                        localStorage.userid = data.usr._id;
+                        localStorage.token = data.tok;
+                        $scope.fromServer = "Welcome, " + data.usr.username;
+
+                    }).error(function (status, data) {
+                        console.log(status);
+                        console.log(data);
+                    });
+                    $timeout(function () {
+                        $scope.closeLogin();
+                        $ionicViewService.nextViewOptions({
+                            disableBack: true
+                        });
+                        $location.path('/app/myBoard');
+                    }, 3000);
+                }
+            }
+
+
+
+
+
+            $ionicModal.fromTemplateUrl('templates/login.html', {
+                scope: $scope
+            }).then(function (modal) {
+                $scope.modal.login = modal;
             });
-            res.error(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
-            });
 
-            $timeout(function () {
-                $scope.closeAddPost();
-            }, 20000);
-        };
-
-        // Close open add post modal
-        $scope.closeAddPost = function () {
-            $scope.modal.addPost.hide();
-        };
-
-
-
-
-
-
-
-        /**
-         * Add Board
-         */
-        $ionicModal.fromTemplateUrl('templates/addBoard.html', {
-            scope: $scope
-        }).then(function (modal) {
-            $scope.modal.addBoard = modal;
-        });
-        $scope.addBoard = function () {
-            $scope.modal.addBoard.show();
-        };
-
-        $scope.doAddBoard = function () {
-
-            var dataObj = {
-                privacyLevel: $scope.addboarddata.privacyLevel,
-                timeout: $scope.addboarddata.timeout,
-                tag: $scope.addboarddata.boardTag,
-                maxTTL: $scope.addboarddata.maxTTL
+            $scope.login = function () {
+                $scope.modal.login.show();
             };
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.post(serverUrl + '/api/boards', dataObj);
-            res.success(function (data, status, headers, config) {
-               $scope.responseData.fromServer = data.message;
-            });
-            res.error(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
-            });
 
-
-            $timeout(function () {
-                $scope.closeAddBoard();
-
-            }, 20000);
-        };
-
-
-        $scope.closeAddBoard = function () {
-            $scope.modal.addBoard.hide();
-        };
-
-        /*
-         Add friend
-         */
-        $scope.addFriend = function(id, friendname){
-            var dataObj = {
-                friendid: id,
-                frndname: friendname
-
+            $scope.closeLogin = function () {
+                $scope.modal.login.hide();
             };
-            $http.defaults.headers.common['x-auth'] = localStorage.jwttoken;
-            var res = $http.put(serverUrl + '/api/users/' + localStorage.userid, dataObj);
-            res.success(function (data, status, headers, config) {
+
+        }
+
+
+    ]) .controller('AppCtrl', ['$scope', '$location', '$window', '$timeout', '$interval', '$ionicModal', '$ionicViewService', '$cordovaToast', 'BoardService', 'PostService', 'UserDataService', 'AuthenticationService',
+        function AppCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService, PostService, UserDataService, AuthenticationService) {
+
+            $scope.logout = function() {
+                if (AuthenticationService.isLogged) {
+                    AuthenticationService.isLogged = false;
+                    delete localStorage.username;
+                    delete localStorage.token;
+                    delete localStorage.userid;
+                    $location.path("/");
+                }
+
+            }
+
+            $scope.modal = {};
+            $scope.addBoardData = {};
+            $scope.addPostData = {};
+            $scope.username = localStorage.username;
+
+            BoardService.getMyBoard().success(function (data, status, headers, config) {
+                $scope.myPosts = data;
+            }).error(function (data, status, headers, config) {
                 alert(data.message);
             });
-            res.error(function (data, status, headers, config) {
-                $scope.responseData.fromServer = data.message;
+
+            BoardService.getPublishedBoards().success(function (data, status, headers, config) {
+                $scope.boards = data;
+            }).error(function (data, status, headers, config) {
+                alert(data.message);
             });
-        }
+
+            UserDataService.getAllFriends().success(function (data, status, headers, config) {
+                $scope.friends = data;
+            }).error(function (data, status, headers, config) {
+                alert(data.message);
+            });
+
+            UserDataService.getAllUsers().success(function (data, status, headers, config) {
+                $scope.users = data;
+            }).error(function (data, status, headers, config) {
+                alert(data.message);
+            });
+
+            $interval(function(){
+                BoardService.getMyBoard().success(function (data, status, headers, config) {
+                    $scope.myPosts = data;
+                }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
+
+                BoardService.getPublishedBoards().success(function (data, status, headers, config) {
+                    $scope.boards = data;
+                }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
+
+                UserDataService.getAllFriends().success(function (data, status, headers, config) {
+                    $scope.friends = data;
+                }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
+
+                UserDataService.getAllUsers().success(function (data, status, headers, config) {
+                    $scope.users = data;
+                }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
+
+                BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
+                    $scope.posts = data;
+                }).error(function (data, status, headers, config) {
+                    console.log(data.message);
+                });
+            }, 10000);
+
+            $scope.fillTagField = function(){
+                $scope.addBoardData.boardTag = localStorage.username + "'s Board";
+            }
+
+
+            $ionicModal.fromTemplateUrl('templates/addBoard.html', {
+                scope: $scope
+            }).then(function (modal) {
+                $scope.modal.addBoard = modal;
+            });
+            $scope.addBoard = function () {
+                $scope.modal.addBoard.show();
+            };
+            $scope.closeAddBoard = function () {
+                $scope.modal.addBoard.hide();
+            };
+
+
+            $scope.doAddBoard = function () {
+                var newBoardData = {
+                    privacyLevel: $scope.addBoardData.privacyLevel,
+                    timeout: $scope.addBoardData.timeout,
+                    tag: $scope.addBoardData.boardTag,
+                    maxTTL: $scope.addBoardData.maxTTL
+                };
+
+                BoardService.addBoard(newBoardData).success(function (data, status, headers, config) {
+                    $scope.fromServer = data.message;
+                }).error(function (data, status, headers, config) {
+                    $scope.fromServer = data.message;
+                });
+
+
+                $timeout(function () {
+                    $scope.closeAddBoard();
+
+                }, 20000);
+            };
+
+            $scope.viewBoard = function(id, tag){ //view a boards posts on click
+
+                $location.path("/app/viewposts");
+                $scope.addBoardData.boardTag = tag;
+                $scope.polingTag = tag;
+
+                BoardService.getBoardByTag(tag).success(function (data, status, headers, config) {
+                    $scope.posts = data;
+                }).error(function (data, status, headers, config) {
+                    console.log(data.message);
+                });
+
+            }
 
 
 
 
 
 
-    })
+            $ionicModal.fromTemplateUrl('templates/addPost.html', {
+                scope: $scope
+            }).then(function (modal) {
+                $scope.modal.addPost = modal;
+            });
+
+            // Open the addpost modal
+            $scope.addPost = function () {
+                $scope.modal.addPost.show();
+
+            };
+
+            $scope.doAddPost = function () {
+                var newPostData = {
+                    content: $scope.addPostData.content,
+                    privacyLevel: $scope.addPostData.privacyLevel,
+                    timeout: $scope.addPostData.timeout,
+                    tag: $scope.addBoardData.boardTag
+                };
 
 
-    ;
+                PostService.addPost(newPostData).success(function (data, status, headers, config) {
+                    $scope.fromServer = data.message;
+                }).error(function (data, status, headers, config) {
+                    $scope.fromServer = data.message;
+                });
+
+                $timeout(function () {
+                    $scope.closeAddPost();
+                }, 20000);
+            };
+
+            // Close open add post modal
+            $scope.closeAddPost = function () {
+                $scope.modal.addPost.hide();
+            };
+
+
+            $scope.addFriend = function(id, friendname){
+                var newFriendData = {
+                    friendid: id,
+                    frndname: friendname
+
+                };
+                UserDataService.addFriend(newFriendData).success(function (data, status, headers, config) {
+                    alert(data.message);
+                }).error(function (data, status, headers, config) {
+                      alert(data.message);
+                });
+            }
+
+        }]);
+
+
+

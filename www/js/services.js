@@ -1,10 +1,10 @@
-angular.module('starter.services', ['ngResource'])
+angular.module('init.services', ['ngResource'])
 
-    .factory(("ionPlatform"), function( $q ){
+    .factory(("ionPlatform"), function ($q) {
         var ready = $q.defer();
 
-        ionic.Platform.ready(function( device ){
-            ready.resolve( device );
+        ionic.Platform.ready(function (device) {
+            ready.resolve(device);
         });
 
         return {
@@ -12,41 +12,127 @@ angular.module('starter.services', ['ngResource'])
         }
     })
 
-//get all posts for my board
-    .factory('Post', ['$resource',
-        function ($resource) {
-            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
-            console.log('fuck ' + localStorage.jwttoken);
-            return $resource(serverUrl + '/api/myboard', {}, {
-                query: {method: 'GET', isArray: true, headers: {'x-auth':localStorage.jwttoken } }
-            });
-        }])
 
-//get all users for search potentially
-    .factory('Users', ['$resource',
-        function ($resource) {
-            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
-            return $resource(serverUrl + '/api/users', {}, {
-                query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
-            });
-        }])
+    .factory('AuthenticationService', function () {
+        var auth = {
+            isLogged: false
+        }
 
-    .factory('Friends', ['$resource',
-        function ($resource) {
-            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
-            return $resource(serverUrl + '/api/users', {}, {
-                charge: {method: 'POST', headers:{'x-auth':localStorage.jwttoken } }
-            });
-        }])
+        return auth;
+    })
 
-//get all published boards for a logged in user
-    .factory('Board', ['$resource',
-        function ($resource) {
-            var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
-            return $resource(serverUrl + '/api/boards', {}, {
-                query: {method: 'GET', isArray: true, headers:{'x-auth':localStorage.jwttoken } }
-            });
-        }]);
+    .factory('UserLoginService', function ($http) {
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        return {
+            logIn: function (username, password) {
+                return $http.post(serverUrl + '/api/auth/login', {username: username, password: password});
+            },
+
+            logOut: function () {
+
+            }
+        }
+    })
+
+
+    .factory('RegistrationService', function ($http) {
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        return {
+            register: function (regInfo) {
+                return $http.post(serverUrl + '/api/auth/register', regInfo);
+            }
+        }
+    })
+
+    .factory('TokenInterceptor', function ($q, $window, $location, AuthenticationService) {
+        return {
+            request: function (config) {
+                config.headers = config.headers || {};
+                if (localStorage.token) {
+                    //config.headers.Authorization = 'x-auth ' + localStorage.token;
+                }
+                return config;
+            },
+
+            requestError: function (rejection) {
+                return $q.reject(rejection);
+            },
+
+            /* Set Authentication.isAuthenticated to true if 200 received */
+            response: function (response) {
+                if (response != null && response.status == 200 && localStorage.token && !AuthenticationService.isAuthenticated) {
+                    AuthenticationService.isAuthenticated = true;
+                }
+                return response || $q.when(response);
+            },
+
+            /* Revoke client authentication if 401 is received */
+            responseError: function (rejection) {
+                if (rejection != null && rejection.status === 401 && (localStorage.token || AuthenticationService.isAuthenticated)) {
+                    delete localStorage.token;
+                    AuthenticationService.isAuthenticated = false;
+                    $location.path("/init/login");
+                }
+
+                return $q.reject(rejection);
+            }
+        };
+    });
+
+
+angular.module('data.services', ['ngResource'])
+
+    .factory('BoardService', function ($http) {
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        $http.defaults.headers.common['x-auth'] = localStorage.token;
+        return {
+            addBoard: function(newBoardData){
+                return $http.post(serverUrl + '/api/boards', newBoardData);
+            },
+            getPublishedBoards: function(){
+                return $http.get(serverUrl + '/api/boards');
+            },
+            getMyBoard: function(){
+                return $http.get(serverUrl + '/api/myboard');
+            },
+            getBoardByTag: function(Tag){
+                return $http.get(serverUrl + '/api/boards/' + Tag);
+            }
+
+        }
+    })
+    .factory('PostService', function ($http) {
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        $http.defaults.headers.common['x-auth'] = localStorage.token;
+        return {
+            addPost: function(newPostData){
+                return $http.post(serverUrl + '/api/posts', newPostData);
+            }
+
+        }
+    })
+    .factory('UserDataService', function ($http) {
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        $http.defaults.headers.common['x-auth'] = localStorage.token;
+        return {
+            getAllUsers: function(){
+                return $http.get(serverUrl + '/api/users');
+            },
+            getAllFriends: function(){
+                return $http.post(serverUrl + '/api/users');
+            },
+            addFriend: function(newFriendData){
+                return $http.put(serverUrl + '/api/users/' + localStorage.userid, newFriendData);
+            }
+
+        }
+    })
+;
+
+
+
+
+
 
 
 

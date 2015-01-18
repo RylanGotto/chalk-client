@@ -10,19 +10,19 @@
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Tag</span>
-                    <textarea ng-model="addboarddata.boardTag" />
+                    <textarea ng-model="addBoardData.boardTag" />
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Timeout Time</span>
-                    <input ng-model="addboarddata.timeout" type="number">
+                    <input ng-model="addBoardData.timeout" type="number">
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Post lifetime</span>
-                    <input ng-model="addboarddata.maxTTL" type="number">
+                    <input ng-model="addBoardData.maxTTL" type="number">
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Privacy Level</span>
-                    <select ng-model="addboarddata.privacyLevel" >
+                    <select ng-model="addBoardData.privacyLevel" >
                         <option ng-selected="selected">Public</option>
                         <option>Private</option>
                         <option>Friends</option>
@@ -35,7 +35,7 @@
         </form>
         <div class="card">
             <div class="item item-text-wrap">
-                {{responseData.fromServer}}
+                {{fromServer}}
             </div>
         </div>
 

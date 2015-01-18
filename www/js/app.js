@@ -4,9 +4,9 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
+angular.module('starter', ['ionic', 'main.controllers', 'init.services', 'data.services', 'ngCordova'])
 
-    .run(function ($ionicPlatform) {
+    .run(function ($ionicPlatform, $rootScope, $location, $ionicViewService, AuthenticationService) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -18,26 +18,50 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 StatusBar.styleDefault();
             }
         });
+
+
+        $rootScope.$on("$stateChangeStart", function (event, nextState) {
+
+            if (!localStorage.token) {
+                AuthenticationService.isLogged = false;
+                $location.path("/init/login");
+                $ionicViewService.nextViewOptions({
+                    disableBack: true
+                });
+            }
+            if (nextState.access.requiredLogin && !AuthenticationService.isLogged) {
+                $location.path("/init/login");
+            }
+        });
+
     })
 
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('TokenInterceptor');
+    }])
+
     .config(function ($stateProvider, $urlRouterProvider) {
+
+
         $stateProvider
 
-            .state('reg', {
-                url: "/reg",
+
+            .state('init', {
+                url: "/init",
                 abstract: true,
-                templateUrl: "templates/menu.html",
-                controller: 'CordovaCtrl'
-            })
-            .state('reg.dev', {
-                url: "/dev",
-                views: {
-                    'menuContent': {
-                        templateUrl: "templates/reg.html"
-                    }
-                }
+                templateUrl: "templates/loginPage.html",
+                controller: 'InitCtrl'
             })
 
+            .state('init.login', {
+                url: "/login",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/loginPage.html"
+                    }
+                },
+                access: {requiredLogin: false}
+            })
 
             .state('app', {
                 url: "/app",
@@ -53,7 +77,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/search.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             })
 
 
@@ -63,7 +88,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/browse.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             })
 
             .state('app.publishedboards', {
@@ -72,7 +98,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/publishedBoards.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             })
 
             .state('app.viewposts', {
@@ -81,7 +108,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/viewPosts.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             })
 
             .state('app.viewfriends', {
@@ -90,17 +118,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/viewFriends.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             })
 
-            .state('app.login', {
-                url: "/login",
-                views: {
-                    'menuContent': {
-                        templateUrl: "templates/loginPage.html"
-                    }
-                }
-            })
+
 
             .state('app.myBoard', {
                 url: "/myBoard",
@@ -108,15 +130,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                     'menuContent': {
                         templateUrl: "templates/myBoard.html"
                     }
-                }
+                },
+                access: {requiredLogin: true}
             });
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise(function() {
-            console.log('otherwise');
-            if(typeof localStorage.jwttoken === 'undefined') {
-                return 'app/login';
+        $urlRouterProvider.otherwise(function () {
+            if (typeof localStorage.jwttoken === 'undefined') {
+                return 'init/login';
             } else {
-                return 'app/myBoard';
+                return 'init/myBoard';
             }
 
         });
