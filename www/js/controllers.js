@@ -96,7 +96,7 @@ angular.module('main.controllers', [])
 
 
     ]) .controller('AppCtrl',
-    function AppCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService, PostService, UserDataService, AuthenticationService, $cordovaPush, $cordovaDevice, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform) {
+    function AppCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService, PostService, UserDataService, AuthenticationService, $cordovaPush, $cordovaDevice, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $state) {
 
         $scope.notifications = [];
 
@@ -105,6 +105,7 @@ angular.module('main.controllers', [])
             $scope.register();
         });
 
+        $scope.newActivity = 0;
 
         // Register
         $scope.register = function () {
@@ -126,7 +127,7 @@ angular.module('main.controllers', [])
             $cordovaPush.register(config).then(function (result) {
 
 
-                $cordovaToast.showShortCenter('Registered for push notifications');
+                //$cordovaToast.showShortCenter('Registered for push notifications');
                 $scope.registerDisabled=true;
                 console.log(result);
                 // ** NOTE: Android regid result comes back in the pushNotificationReceived, only iOS returned here
@@ -156,12 +157,32 @@ angular.module('main.controllers', [])
             }
         });
 
+        function gcmHandler(type){
+            switch(type){
+                case "0":
+                    if($state.current.url === "/myBoard"){
+                        BoardService.getMyBoard().success(function (data, status, headers, config) {
+                            $scope.myPosts = data;
+                            $cordovaToast.showShortCenter('New Post on My Board!');
+                        }).error(function (data, status, headers, config) {
+                            alert(data.message);
+                        });
+                    } else {
+                        $scope.newPostCount = $scope.newPostCount + 1;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         // Android Notification Received Handler
         function handleAndroid(notification) {
             // ** NOTE: ** You could add code for when app is in foreground or not, or coming from coldstart here too
             //             via the console fields as shown.
             if (AuthenticationService.isLogged) {
-                console.log("In foreground " + notification.foreground + " Coldstart " + notification.coldstart)
+                console.log("In foreground " + notification.foreground + " Coldstart " + notification.coldstart);
                 console.log(notification);
                 if (notification.event == "registered") {
                     $scope.regId = notification.regid;
@@ -169,21 +190,15 @@ angular.module('main.controllers', [])
                     storeDeviceToken("android");
                 }
                 else if (notification.event == "message") {
-                    console.log(notification.message);
-                    //$cordovaToast.showShortCenter(notification.message);
-                    //$cordovaDialogs.alert(notification.message);
-                    $scope.$apply(function () {
-                       // $scope.notifications.push(JSON.stringify(notification.message));
-                    })
+                    gcmHandler(notification.payload.type);
+
                 }
                 else if (notification.event == "error")
                     $cordovaDialogs.alert(notification.msg, "Push notification error event");
                 else $cordovaDialogs.alert(notification.event, "Push notification handler - Unprocessed Event");
             }
         }
-        function alertDismissed(){
 
-        }
         // IOS Notification Received Handler
         function handleIOS(notification) {
             // The app was already open but we'll still show the alert and sound the tone received this way. If you didn't check
@@ -220,13 +235,13 @@ angular.module('main.controllers', [])
             }
         }
 
-        // Stores the device token in a db using node-pushserver (running locally in this case)
+        // Stores the device token in a db using chalkserver (running locally in this case)
         //
         // type:  Platform type (ios, android etc)
         function storeDeviceToken(type) {
             console.log("Reached store device");
             // Create a random userid to store with it
-            var user = { user: 'user' + Math.floor((Math.random() * 10000000) + 1), type: type, token: $scope.regId };
+            var user = { user: 'user' + localStorage.username, type: type, token: $scope.regId };
             console.log("Post token for registered device with data " + JSON.stringify(user));
 
             $http.post('http://192.168.0.5:8000/subscribe', JSON.stringify(user))
@@ -255,6 +270,9 @@ angular.module('main.controllers', [])
             );
         }
 
+
+
+
         // Unregister - Unregister your device token from APNS or GCM
         // Not recommended:  See http://developer.android.com/google/gcm/adv.html#unreg-why
         //                   and https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/index.html#//apple_ref/occ/instm/UIApplication/unregisterForRemoteNotifications
@@ -272,7 +290,6 @@ angular.module('main.controllers', [])
 //        });
         }
 
-
         $scope.logout = function() {
             if (AuthenticationService.isLogged) {
                 AuthenticationService.isLogged = false;
@@ -284,10 +301,22 @@ angular.module('main.controllers', [])
 
         }
 
+        $scope.newPostCount = 0;
         $scope.modal = {};
         $scope.addBoardData = {};
         $scope.addPostData = {};
         $scope.username = localStorage.username;
+
+
+        $scope.goMyBoard = function(){
+            $scope.newPostCount = 0;
+            BoardService.getMyBoard().success(function (data, status, headers, config) {
+                $scope.myPosts = data;
+            }).error(function (data, status, headers, config) {
+                alert(data.message);
+            });
+            $location.path("/app/myBoard");
+        }
 
         BoardService.getMyBoard().success(function (data, status, headers, config) {
             $scope.myPosts = data;
@@ -313,37 +342,7 @@ angular.module('main.controllers', [])
             alert(data.message);
         });
 
-        $interval(function(){
-            BoardService.getMyBoard().success(function (data, status, headers, config) {
-                $scope.myPosts = data;
-            }).error(function (data, status, headers, config) {
-                alert(data.message);
-            });
 
-            BoardService.getPublishedBoards().success(function (data, status, headers, config) {
-                $scope.boards = data;
-            }).error(function (data, status, headers, config) {
-                alert(data.message);
-            });
-
-            UserDataService.getAllFriends().success(function (data, status, headers, config) {
-                $scope.friends = data;
-            }).error(function (data, status, headers, config) {
-                alert(data.message);
-            });
-
-            UserDataService.getAllUsers().success(function (data, status, headers, config) {
-                $scope.users = data;
-            }).error(function (data, status, headers, config) {
-                alert(data.message);
-            });
-
-            BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
-                $scope.posts = data;
-            }).error(function (data, status, headers, config) {
-                console.log(data.message);
-            });
-        }, 10000);
 
         $scope.fillTagField = function(){
             $scope.addBoardData.boardTag = localStorage.username + "'s Board";
