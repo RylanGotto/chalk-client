@@ -3,11 +3,18 @@
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header">
-    <ion-item nav-clear menu-close ng-click="addPost()">
-                Add Post
-            </ion-item>
+        <div class="card" ng-show="showNewFriendDiv">
+            <div class="item item-text-wrap">
+                <p>Accept friend request from {{requester}}?</p>
+                <button ng-click="acceptFR()" class="button button-positive">
+                    Accept
+                </button>
+                <button ng-click="declineFR()" class="button button-assertive">
+                    Decline
+                </button>
+            </div>
+        </div>
         <ion-list>
-
             <ion-item ng-repeat="user in friends.friends">
                 <a href="" ng-click="viewBoard(user._id, user.username + '\'s Board')">
                             <div class="list card">
