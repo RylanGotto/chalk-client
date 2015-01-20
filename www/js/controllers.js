@@ -478,12 +478,10 @@ angular.module('main.controllers', [])
                        $scope.showNewFriendDiv = false;
 
                     });
-                    alert($scope.showNewFriendDiv);
                 }).error();
             }
 
             $scope.declineFR = function(){
-                alert(123);
                 UserDataService.respondFriendRequest(false).success(function(err, data){
                     $timeout(function(){
                         $scope.showNewFriendDiv = false;
