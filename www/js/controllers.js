@@ -49,7 +49,6 @@ angular.module('main.controllers', [])
 
 
 
-            //Admin User Controller (login, logout)
             $scope.doLogin = function(username, password) {
                 if (username !== undefined && password !== undefined) {
 
@@ -69,7 +68,9 @@ angular.module('main.controllers', [])
                         $ionicViewService.nextViewOptions({
                             disableBack: true
                         });
-                        $location.path('/app/myBoard');
+                        if(AuthenticationService.isLogged){
+                            $location.path('/app/myBoard');
+                        }
                     }, 2500);
                 }
             }
@@ -182,6 +183,7 @@ angular.module('main.controllers', [])
                         });
                         break;
                     case "2":
+
                         if ($state.current.url === "/viewfriends") {
                             $cordovaToast.showShortBottom(payload.username + ' sent a friend request');
 
@@ -482,9 +484,14 @@ angular.module('main.controllers', [])
             }
 
             $scope.declineFR = function(){
-                UserDataService.respondFriendRequest(false).success(function(err, data){
+                var acceptData = {
+                    decision: false,
+                    requesteeusername : localStorage.username
+                }
+                UserDataService.respondFriendRequest(acceptData).success(function(err, data){
                     $timeout(function(){
                         $scope.showNewFriendDiv = false;
+                        $scope.serviceUpdate();
                     });
                 }).error();
             }
