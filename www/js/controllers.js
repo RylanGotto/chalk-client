@@ -104,6 +104,7 @@ angular.module('main.controllers', [])
 
             // call to register automatically upon device ready
             ionPlatform.ready.then(function (device) {
+                console.log('here');
                 $scope.register();
                 $scope.serviceUpdate();
             });
@@ -161,12 +162,13 @@ angular.module('main.controllers', [])
             });
 
             function gcmHandler(payload) {
+                $timeout(function () {
+                    $scope.serviceUpdate();
+                });
                 switch (payload.type) {
                     case "0": //new post on myBoard
                         if ($state.current.url === "/myBoard") {
-                            $timeout(function () {
-                                $scope.serviceUpdate();
-                            });
+
                             $cordovaToast.showShortCenter('New Post on My Board!');
 
                         } else {
@@ -179,11 +181,9 @@ angular.module('main.controllers', [])
                     case "1": //friend has accpeted friend request
                         $timeout(function () {
                             $scope.newFriendCount = $scope.newFriendCount + 1;
-                            $scope.serviceUpdate();
                         });
                         break;
                     case "2":
-
                         if ($state.current.url === "/viewfriends") {
                             $cordovaToast.showShortBottom(payload.username + ' sent a friend request');
 
@@ -193,7 +193,6 @@ angular.module('main.controllers', [])
                             });
                         }
                         $timeout(function () {
-                            $scope.serviceUpdate();
                             $scope.showNewFriendDiv = true;
                             $scope.requester = payload.username;
                         });
@@ -457,11 +456,9 @@ angular.module('main.controllers', [])
             };
 
 
-            $scope.addFriend = function (id, friendname) {
+            $scope.addFriend = function (friendname) {
                 var newFriendData = {
-                    friendid: id,
                     friendusername: friendname
-
                 };
                 UserDataService.sendFriendRequest(newFriendData).success(function (data, status, headers, config) {
                     alert(data.message);
@@ -470,31 +467,22 @@ angular.module('main.controllers', [])
                 });
             }
 
-            $scope.acceptFR = function(){
-                var acceptData = {
-                    decision: true,
-                    requesteeusername : localStorage.username
+            $scope.respondToFR = function(friendRequestID, userChoice){
+                var decisionData = {
+                    decision: userChoice,
+                    friendRequestID: friendRequestID
                 }
-                UserDataService.respondFriendRequest(acceptData).success(function(err, data){
-                    $timeout(function(){
-                       $scope.showNewFriendDiv = false;
 
-                    });
-                }).error();
-            }
-
-            $scope.declineFR = function(){
-                var acceptData = {
-                    decision: false,
-                    requesteeusername : localStorage.username
-                }
-                UserDataService.respondFriendRequest(acceptData).success(function(err, data){
+                UserDataService.respondFriendRequest(decisionData).success(function(){
                     $timeout(function(){
-                        $scope.showNewFriendDiv = false;
                         $scope.serviceUpdate();
-                    });
-                }).error();
+                    }, 500);
+                }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
             }
+
+
 
             $scope.serviceUpdate = function () {
 
@@ -520,8 +508,19 @@ angular.module('main.controllers', [])
                 UserDataService.getAllFriends().success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.friends = data;
-                    });
+                    }, 500);
                 }).error(function (data, status, headers, config) {
+                    alert(data.message);
+                });
+
+                UserDataService.getFriendRequest().success(function(data, status, headers, config){
+                    $timeout(function () {
+                        $scope.friendRequests = data;
+                        $scope.newFriendCount = data.length;
+                    });
+
+                }).error(function(){
+                    console.log(2);
                     alert(data.message);
                 });
 

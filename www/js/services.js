@@ -125,11 +125,13 @@ angular.module('data.services', ['ngResource'])
             getAllFriends: function(){
                 return $http.post(serverUrl + '/api/users');
             },
+            getFriendRequest: function(){
+                return $http.get(serverUrl + '/api/friendRequest');
+            },
             sendFriendRequest: function(newFriendData){
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newFriendData);
-            },respondFriendRequest: function(acceptData){
-
-                return $http.post(serverUrl + '/api/friendRequest', acceptData);
+            },respondFriendRequest: function(decisionData){
+                return $http.post(serverUrl + '/api/friendRequest', decisionData);
             }
 
 
