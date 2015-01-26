@@ -164,12 +164,13 @@ angular.module('main.controllers', [])
             function gcmHandler(payload) {
                 $timeout(function () {
                     $scope.serviceUpdate();
+                    console.log("silent?");
                 });
                 switch (payload.type) {
                     case "0": //new post on myBoard
                         if ($state.current.url === "/myBoard") {
 
-                            $cordovaToast.showShortCenter('New Post on My Board!');
+                            $cordovaToast.showShortCenter('New Post!');
 
                         } else {
                             $timeout(function () {
@@ -271,7 +272,7 @@ angular.module('main.controllers', [])
                 var user = {user: $scope.username, type: type, token: $scope.regId};
                 console.log("Post token for registered device with data " + JSON.stringify(user));
                 $http.defaults.headers.common['x-auth'] = localStorage.token;
-                $http.post("http://slightyused.info:8080/api/push/subscribe", JSON.stringify(user))
+                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/subscribe", JSON.stringify(user))
                     .success(function (data, status) {
                         console.log("Token stored, device is successfully subscribed to receive push notifications.");
                     })
@@ -287,7 +288,7 @@ angular.module('main.controllers', [])
             // previously so multiple userids will be created with the same token unless you add code to check).
             function removeDeviceToken() {
                 var tkn = {"token": $scope.regId};
-                $http.post('http://slightyused.info:8080/api/push/unsubscribe', JSON.stringify(tkn))
+                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/unsubscribe", JSON.stringify(tkn))
                     .success(function (data, status) {
                         console.log("Token removed, device is successfully unsubscribed and will not receive push notifications.");
                     })
