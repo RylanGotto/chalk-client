@@ -7,19 +7,20 @@
     <ion-item nav-clear menu-close ng-click="addPost()">
                 Add Post
             </ion-item>
+
         <ion-list>
-            <ion-item ng-repeat="post in myPosts ">
-                        <ion-item ng-repeat="k in post.posts | orderBy:'time':true">
+            <ion-item ng-repeat="k in myPosts | orderBy:'dateCreated':true" ">
                             <div class="list card">
 
                                 <div class="item item-avatar">
                                     <img src="http://placehold.it/140x100">
                                     <h2>{{k.owner}}</h2>
-                                    <p>Posted at: {{k.time}}</p>
-                                    <p>Timeout in: {{k.timeout}} mins</p>
+                                    <p>Posted at: {{k.dateCreated | date:'hh:mm:ss' : 'UTC'}}</p>
+                                    <p>Timeout in: {{k.timeout | date:'m' : 'UTC' }} mins</p>
                                     <p>Privacy: {{k.privacyLevel}}</p>
+
                                 </div>
-                        </ion-item>
+
                                 <div class="item item-body">
                                     <p>
                                         {{k.content}}
