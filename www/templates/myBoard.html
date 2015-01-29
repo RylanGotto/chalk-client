@@ -5,6 +5,7 @@
     </ion-nav-buttons>
     <ion-content class="has-header">
     <ion-item nav-clear menu-close ng-click="addPost()">
+
                 Add Post
             </ion-item>
 
@@ -25,6 +26,10 @@
                                     <p>
                                         {{k.content}}
                                     </p>
+                                    <div class="card">
+                                            <img ng-src="{{k.img}}" />
+
+                                    </div>
                                     <p>
                                         <a href="#" class="subdued">1 Like</a>
                                         <a href="#" class="subdued">5 Comments</a>

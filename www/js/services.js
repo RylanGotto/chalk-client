@@ -22,7 +22,8 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+
 
         return {
             logIn: function (username, password) {
@@ -37,7 +38,7 @@ angular.module('init.services', ['ngResource'])
 
 
     .factory('RegistrationService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         return {
             register: function (regInfo) {
@@ -85,7 +86,7 @@ angular.module('init.services', ['ngResource'])
 angular.module('data.services', ['ngResource'])
 
     .factory('BoardService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
@@ -105,7 +106,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('PostService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
@@ -116,7 +117,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('UserDataService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
             getAllUsers: function(){

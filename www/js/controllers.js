@@ -7,6 +7,7 @@ angular.module('main.controllers', [])
             $scope.modal = {};
             $scope.regData = {};
 
+
             $ionicModal.fromTemplateUrl('templates/register.html', {
                 scope: $scope
             }).then(function (modal) {
@@ -97,7 +98,7 @@ angular.module('main.controllers', [])
 
 
     ]) .controller('AppCtrl',
-    function AppCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService, PostService, UserDataService, AuthenticationService, $cordovaPush, $cordovaDevice, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $state, $http) {
+    function AppCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService, PostService, UserDataService, AuthenticationService, $cordovaPush, $cordovaDevice, $cordovaDialogs, $cordovaMedia, $cordovaToast, ionPlatform, $state, $http, $cordovaCamera) {
 
         if(AuthenticationService.isLogged) {
             $scope.notifications = [];
@@ -110,6 +111,28 @@ angular.module('main.controllers', [])
             });
 
             $scope.newActivity = 0;
+
+
+            $scope.takePicture = function() {
+                var options = {
+                    quality : 75,
+                    destinationType : Camera.DestinationType.DATA_URL,
+                    sourceType : Camera.PictureSourceType.CAMERA,
+                    allowEdit : true,
+                    encodingType: Camera.EncodingType.JPEG,
+                    targetWidth: 300,
+                    targetHeight: 300,
+                    popoverOptions: CameraPopoverOptions,
+                    saveToPhotoAlbum: false
+                };
+
+                $cordovaCamera.getPicture(options).then(function(imageData) {
+                    $scope.imgURI = "data:image/jpeg;base64," + imageData;
+                }, function(err) {
+                    // An error occured. Show a message to the user
+                });
+            }
+
 
             // Register
             $scope.register = function () {
@@ -436,9 +459,9 @@ angular.module('main.controllers', [])
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
                     timeout: $scope.addPostData.timeout,
-                    tag: $scope.addBoardData.boardTag
+                    tag: $scope.addBoardData.boardTag,
+                    img: $scope.imgURI
                 };
-
 
                 PostService.addPost(newPostData).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
