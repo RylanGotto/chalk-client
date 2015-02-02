@@ -8,41 +8,31 @@
             </ion-item>
         <ion-list>
             <ion-item ng-repeat="post in posts">
-                        <ion-item ng-repeat="k in post.posts | orderBy:'time':true">
+                        <ion-item ng-repeat="k in post.posts | orderBy:'dateCreated':true">
                             <div class="list card">
 
-                                <div class="item item-avatar">
-                                    <img src="http://placehold.it/140x100">
-                                    <h2>{{k.owner}}</h2>
-                                    <p>Posted at: {{k.time}}</p>
-                                    <p>Timeout in: {{k.timeout}} mins</p>
-                                    <p>Privacy: {{k.privacyLevel}}</p>
-                                </div>
-                        </ion-item>
-                                <div class="item item-body">
-                                    <p>
-                                        {{k.content}}
-                                    </p>
-                                    <p>
-                                        <a href="#" class="subdued">1 Like</a>
-                                        <a href="#" class="subdued">5 Comments</a>
-                                    </p>
-                                </div>
 
-                                <div class="item tabs tabs-secondary tabs-icon-left">
-                                    <a class="tab-item" href="#">
-                                        <i class="icon ion-thumbsup"></i>
-                                        Like
-                                    </a>
-                                    <a class="tab-item" href="#">
-                                        <i class="icon ion-chatbox"></i>
-                                        Comment
-                                    </a>
-                                    <a class="tab-item" href="#">
-                                        <i class="icon ion-share"></i>
-                                        Share
-                                    </a>
-                                </div>
+                                    <div class="item item-avatar">
+                                        <img src="http://placehold.it/140x100">
+                                        <h2>{{k.owner}}</h2>
+                                        <p>Posted at: {{k.dateCreated | date:'hh:mm:ss' : 'UTC'}}</p>
+                                        <p>Timeout in: {{k.timeout | date:'m' : 'UTC' }} mins</p>
+                                        <p>Privacy: {{k.privacyLevel}}</p>
+
+                                    </div>
+
+                                    <div class="item item-body">
+
+                                        <div class="card">
+                                            <p>{{k.content}}</p>
+                                            <img ng-src="{{k.img}}" />
+
+                                        </div>
+
+                                        </div>
+
+
+
 
                             </div>
                         </ion-item>

@@ -416,12 +416,15 @@ angular.module('main.controllers', [])
 
                 BoardService.addBoard(newBoardData).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
+                    $scope.serviceUpdate();
+
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
                 });
 
 
                 $timeout(function () {
+
                     $scope.closeAddBoard();
 
                 }, 20000);
@@ -465,6 +468,12 @@ angular.module('main.controllers', [])
 
                 PostService.addPost(newPostData).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
+                    $scope.serviceUpdate();
+                    BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
+                        $scope.posts = data;
+                    }).error(function (data, status, headers, config) {
+                        console.log(data.message);
+                    });
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
                 });
@@ -509,7 +518,6 @@ angular.module('main.controllers', [])
 
 
             $scope.serviceUpdate = function () {
-
                 BoardService.getMyBoard().success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.myPosts = data;
