@@ -22,7 +22,9 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+
+
         return {
             logIn: function (username, password) {
                 return $http.post(serverUrl + '/api/auth/login', {username: username, password: password});
@@ -36,7 +38,8 @@ angular.module('init.services', ['ngResource'])
 
 
     .factory('RegistrationService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+
         return {
             register: function (regInfo) {
                 return $http.post(serverUrl + '/api/auth/register', regInfo);
@@ -83,7 +86,8 @@ angular.module('init.services', ['ngResource'])
 angular.module('data.services', ['ngResource'])
 
     .factory('BoardService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
             addBoard: function(newBoardData){
@@ -102,7 +106,8 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('PostService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
             addPost: function(newPostData){
@@ -112,7 +117,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('UserDataService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+       var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
             getAllUsers: function(){
@@ -121,9 +126,15 @@ angular.module('data.services', ['ngResource'])
             getAllFriends: function(){
                 return $http.post(serverUrl + '/api/users');
             },
-            addFriend: function(newFriendData){
+            getFriendRequest: function(){
+                return $http.get(serverUrl + '/api/friendRequest');
+            },
+            sendFriendRequest: function(newFriendData){
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newFriendData);
+            },respondFriendRequest: function(decisionData){
+                return $http.post(serverUrl + '/api/friendRequest', decisionData);
             }
+
 
         }
     })

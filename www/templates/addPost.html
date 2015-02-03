@@ -28,11 +28,11 @@
                     <option>Friends</option>
                 </select>
                     </label>
-                <label class="item">
-                    <button class="button button-block button-positive" type="submit">Post</button>
-                </label>
-                <ul class="list">
 
+                <ul class="list">
+                    <li class="item item-checkbox">
+                        <button class="button" ng-click="takePicture()">Take Picture</button>
+                    </li>
                     <li class="item item-checkbox">
                         <label ng-click="fillTagField()" class="checkbox">
                             <input type="checkbox">
@@ -48,8 +48,17 @@
 
 
                 </ul>
+                <label class="item">
+                    <button class="button button-block button-positive" type="submit">Post</button>
+                </label>
             </div>
         </form>
+        <div class="card">
+            <div class="item item-text-wrap">
+                <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+                <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
+            </div>
+        </div>
         <div class="card">
             <div class="item item-text-wrap">
                 {{fromServer}}

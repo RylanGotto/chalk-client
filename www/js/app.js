@@ -7,7 +7,8 @@
 angular.module('starter', ['ionic', 'main.controllers', 'init.services', 'data.services', 'ngCordova'])
 
     .run(function ($ionicPlatform, $rootScope, $location, $ionicViewService, AuthenticationService) {
-        $ionicPlatform.ready(function () {
+	FastClick.attach(document.body);        
+	$ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
             if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -19,7 +20,7 @@ angular.module('starter', ['ionic', 'main.controllers', 'init.services', 'data.s
             }
         });
 
-
+	
         $rootScope.$on("$stateChangeStart", function (event, nextState) {
 
             if (!localStorage.token) {

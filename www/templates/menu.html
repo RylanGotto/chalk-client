@@ -16,14 +16,14 @@
         <ion-item nav-clear menu-close ng-click="logout()">
           Logout
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/myBoard">
-          My Board
-        </ion-item>
         <ion-item nav-clear menu-close href="#/app/search">
           Search for Friends
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/viewfriends">
-          My Friends
+        <ion-item nav-clear menu-close ng-click="goMyFriends()">
+          My Friends {{newFriendCount}}
+        </ion-item>
+        <ion-item nav-clear menu-close ng-click="goMyBoard()" >
+          My Board {{newPostCount}}
         </ion-item>
         <ion-item nav-clear menu-close ng-click="addBoard()">
           Make Board
