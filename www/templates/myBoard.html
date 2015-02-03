@@ -3,11 +3,13 @@
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
-    <ion-content class="has-header">
-    <ion-item nav-clear menu-close ng-click="addPost()">
-
-                Add Post
-            </ion-item>
+    <ion-content class="has-header boardGradient">
+        div.row>col
+        <div class="row">
+            <div class="col-20 col-offset-80">
+                <button class="button icon ion-plus-round" ng-click="addPost()">
+            </div>
+        </div>
 
         <ion-list>
             <ion-item ng-repeat="k in myPosts | orderBy:'dateCreated':true" ">

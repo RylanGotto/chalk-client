@@ -8,7 +8,7 @@ angular.module('main.controllers', [])
             $scope.regData = {};
 
 
-            $ionicModal.fromTemplateUrl('templates/register.html', {
+            $ionicModal.fromTemplateUrl('templates/modals/register.html', {
                 scope: $scope
             }).then(function (modal) {
                 $scope.modal.reg = modal;
@@ -80,7 +80,7 @@ angular.module('main.controllers', [])
 
 
 
-            $ionicModal.fromTemplateUrl('templates/login.html', {
+            $ionicModal.fromTemplateUrl('templates/modals/login.html', {
                 scope: $scope
             }).then(function (modal) {
                 $scope.modal.login = modal;
