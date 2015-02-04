@@ -7,7 +7,6 @@
 angular.module('starter', ['ionic', 'main.controllers', 'init.services', 'data.services', 'ngCordova'])
 
     .run(function ($ionicPlatform, $rootScope, $location, $ionicViewService, AuthenticationService) {
-	FastClick.attach(document.body);        
 	$ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)

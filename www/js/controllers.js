@@ -2,8 +2,8 @@
 
 angular.module('main.controllers', [])
 
-    .controller('InitCtrl', ['$scope', '$location', '$window', '$timeout', '$ionicModal', '$ionicViewService', '$cordovaToast', 'UserLoginService', 'AuthenticationService', 'RegistrationService',
-        function InitCtrl($scope, $location, $window, $timeout, $ionicModal, $ionicViewService, $cordovaToast, UserLoginService, AuthenticationService, RegistrationService) {
+    .controller('InitCtrl', ['$scope', '$location', '$window', '$timeout', '$ionicModal', '$ionicViewService', '$cordovaToast', 'UserLoginService', 'AuthenticationService', 'RegistrationService', '$cordovaCamera',
+        function InitCtrl($scope, $location, $window, $timeout, $ionicModal, $ionicViewService, $cordovaToast, UserLoginService, AuthenticationService, RegistrationService, $cordovaCamera) {
             $scope.modal = {};
             $scope.regData = {};
 
@@ -26,8 +26,10 @@ angular.module('main.controllers', [])
                     username: $scope.regData.username,
                     password: $scope.regData.password,
                     confpass: $scope.regData.confPassword,
-                    email: $scope.regData.email
+                    email: $scope.regData.email,
+                    img: $scope.imgURI
                 };
+                console.log(1);
                 console.log(dataObj);
 
                 RegistrationService.register(dataObj).success(function(data){
@@ -76,7 +78,25 @@ angular.module('main.controllers', [])
                 }
             }
 
+            $scope.takePicture = function() {
+                var options = {
+                    quality : 75,
+                    destinationType : Camera.DestinationType.DATA_URL,
+                    sourceType : Camera.PictureSourceType.CAMERA,
+                    allowEdit : true,
+                    encodingType: Camera.EncodingType.JPEG,
+                    targetWidth: 300,
+                    targetHeight: 300,
+                    popoverOptions: CameraPopoverOptions,
+                    saveToPhotoAlbum: false
+                };
 
+                $cordovaCamera.getPicture(options).then(function(imageData) {
+                    $scope.imgURI = "data:image/jpeg;base64," + imageData;
+                }, function(err) {
+                    // An error occured. Show a message to the user
+                });
+            }
 
 
 
@@ -560,6 +580,7 @@ angular.module('main.controllers', [])
                 UserDataService.getAllUsers().success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.users = data;
+                        console.log(data);
                     });
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
