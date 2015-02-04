@@ -364,6 +364,22 @@ angular.module('main.controllers', [])
 
                     $timeout(function () {
                         $scope.newPostCount = 0;
+
+                        // Setting the client side timeout for each post.
+                        data.forEach(function(post) {
+                            post.visible = true;
+                            post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
+                            post.onTimeout = function(){
+                                post.counter--;
+                                if( post.counter > 0 ) {
+                                    posttimeout = $timeout(post.onTimeout,1000);
+                                } else {
+                                    console.log('time up');
+                                    post.visible = false;
+                                }
+                            };
+                            var posttimeout = $timeout(post.onTimeout,1000);
+                        });
                         $scope.myPosts = data;
                     });
                 }).error(function (data, status, headers, config) {
