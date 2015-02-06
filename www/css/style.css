@@ -51,3 +51,31 @@ ion-header-bar .title {
 .modal ion-content {
     background: #F2F1ED;
 }
+
+/* = Posts
+-----------------------------------------------------------------------------*/
+.post {
+    background: none;
+    border: none;
+    overflow: visible;
+}
+.addPostCol {
+    text-align: right;
+}
+.postCol {
+    overflow: visible;
+}
+.profilePic {
+    border-radius: 50%;
+    position: absolute;
+    right: -50px;
+    bottom: -50px;
+}
+
+.item-body, .item-avatar {
+    background: rgba(255,255,255, 0.8);
+    overflow: visible;
+}
+.card {
+    overflow: visible;
+}

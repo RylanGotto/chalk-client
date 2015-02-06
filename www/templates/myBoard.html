@@ -6,43 +6,31 @@
     <ion-content class="has-header boardGradient">
 
         <div class="row">
-            <div class="col-20 col-offset-80">
+            <div class="col-20 col-offset-80 addPostCol">
                 <button class="button icon ion-plus-round" ng-click="addPost()">
             </div>
         </div>
-
-        <ion-list>
-            <ion-item ng-repeat="k in myPosts | orderBy:'counter':false" ">
-
-                            <div class="list card" ng-if="k.visible">
-
-                                <div class="item item-avatar">
-                                    <img src="http://placehold.it/140x100">
-                                    <h2>{{k.owner}}</h2>
-                                    <p>Posted at: {{k.dateCreated | date:'hh:mm:ss' : 'UTC'}}</p>
-                                    <p>Gone in: {{ k.counter }}s</p>
-                                    <p>Privacy: {{k.privacyLevel}}</p>
-
-                                </div>
-
-                                <div class="item item-body">
-
-                                    <div class="card">
-                                        <p>{{k.content}}</p>
-                                            <img ng-src="{{k.img}}" />
-
-                                    </div>
-
-                                </div>
-
-
-
+        <div class="postCol col-90">
+            <ion-list>
+                <ion-item class="post" ng-repeat="k in myPosts | orderBy:'counter':false" ">
+                    <div class="list card" ng-if="k.visible">
+                        <div class="item item-body">
+                            <div class="card">
+                                <p>{{k.content}}</p>
+                                <img ng-src="{{k.img}}" />
                             </div>
-                        </ion-item>
-
-
-            </ion-item>
-            
-        </ion-list>
+                        </div>
+                        <div class="item item-avatar">
+                            <p>Privacy: {{k.privacyLevel}} | Posted: {{k.dateCreated | date:'medium' : 'UTC'}} </p>
+                            <p>Erased in: {{ k.counter }}s</p>
+                            <a href="" ng-click="viewBoard(k.owner + '\'s Board')">
+                                <h2>{{k.owner}}</h2>
+                            </a>
+                            <img class="profilePic" src="http://placehold.it/100x100">
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
     </ion-content>
 </ion-view>

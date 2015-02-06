@@ -125,7 +125,6 @@ angular.module('main.controllers', [])
 
             // call to register automatically upon device ready
             ionPlatform.ready.then(function (device) {
-                console.log('here');
                 $scope.register();
                 $scope.serviceUpdate();
             });
@@ -396,6 +395,7 @@ angular.module('main.controllers', [])
                                 } else {
                                     console.log('time up');
                                     post.visible = false;
+                                    post = null;
                                 }
                             };
                             var posttimeout = $timeout(post.onTimeout,1000);
@@ -466,7 +466,7 @@ angular.module('main.controllers', [])
                 }, 20000);
             };
 
-            $scope.viewBoard = function (id, tag) { //view a boards posts on click
+            $scope.viewBoard = function (tag) { //view a boards posts on click
 
                 $location.path("/app/viewposts");
                 $scope.addBoardData.boardTag = tag;
@@ -596,7 +596,6 @@ angular.module('main.controllers', [])
                 UserDataService.getAllUsers().success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.users = data;
-                        console.log(data);
                     });
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
