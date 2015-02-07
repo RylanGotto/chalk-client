@@ -411,9 +411,11 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 
 - (void)requestFileSystem:(CDVInvokedUrlCommand*)command
 {
+    NSArray* arguments = command.arguments;
+
     // arguments
-    NSString* strType = [command argumentAtIndex:0];
-    unsigned long long size = [[command argumentAtIndex:1] longLongValue];
+    NSString* strType = [arguments objectAtIndex:0];
+    unsigned long long size = [[arguments objectAtIndex:1] longLongValue];
 
     int type = [strType intValue];
     CDVPluginResult* result = nil;
@@ -534,7 +536,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 - (void)resolveLocalFileSystemURI:(CDVInvokedUrlCommand*)command
 {
     // arguments
-    NSString* localURIstr = [command argumentAtIndex:0];
+    NSString* localURIstr = [command.arguments objectAtIndex:0];
     CDVPluginResult* result;
     
     localURIstr = [self encodePath:localURIstr]; //encode path before resolving
@@ -582,7 +584,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
     NSMutableDictionary* options = nil;
 
     if ([arguments count] >= 3) {
-        options = [command argumentAtIndex:2 withDefault:nil];
+        options = [arguments objectAtIndex:2 withDefault:nil];
     }
     // add getDir to options and call getFile()
     if (options != nil) {
@@ -620,10 +622,10 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
  */
 - (void)getFile:(CDVInvokedUrlCommand*)command
 {
-    NSString* baseURIstr = [command argumentAtIndex:0];
+    NSString* baseURIstr = [command.arguments objectAtIndex:0];
     CDVFilesystemURL* baseURI = [self fileSystemURLforArg:baseURIstr];
-    NSString* requestedPath = [command argumentAtIndex:1];
-    NSDictionary* options = [command argumentAtIndex:2 withDefault:nil];
+    NSString* requestedPath = [command.arguments objectAtIndex:1];
+    NSDictionary* options = [command.arguments objectAtIndex:2 withDefault:nil];
 
     NSObject<CDVFileSystem> *fs = [self filesystemForURL:baseURI];
     CDVPluginResult* result = [fs getFileForURL:baseURI requestedPath:requestedPath options:options];
@@ -660,7 +662,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 {
     // arguments
     CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
-    NSDictionary* options = [command argumentAtIndex:1 withDefault:nil];
+    NSDictionary* options = [command.arguments objectAtIndex:1 withDefault:nil];
     NSObject<CDVFileSystem> *fs = [self filesystemForURL:localURI];
     CDVPluginResult* result = [fs setMetadataForURL:localURI withObject:options];
 
@@ -739,8 +741,8 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
     NSArray* arguments = command.arguments;
 
     // arguments
-    NSString* srcURLstr = [command argumentAtIndex:0];
-    NSString* destURLstr = [command argumentAtIndex:1];
+    NSString* srcURLstr = [arguments objectAtIndex:0];
+    NSString* destURLstr = [arguments objectAtIndex:1];
 
     CDVPluginResult *result;
 
@@ -758,7 +760,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
     NSObject<CDVFileSystem> *destFs = [self filesystemForURL:destURL];
 
     // optional argument; use last component from srcFullPath if new name not provided
-    NSString* newName = ([arguments count] > 2) ? [command argumentAtIndex:2] : [srcURL.url lastPathComponent];
+    NSString* newName = ([arguments count] > 2) ? [arguments objectAtIndex:2] : [srcURL.url lastPathComponent];
     if ([newName rangeOfString:@":"].location != NSNotFound) {
         // invalid chars in new name
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsInt:ENCODING_ERR];
@@ -868,8 +870,8 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
         [fs readFileAtURL:localURI start:start end:end callback:^(NSData* data, NSString* mimeType, CDVFileError errorCode) {
             CDVPluginResult* result = nil;
             if (data != nil) {
-                NSString* b64str = [data base64EncodedStringWithOptions:0];
-                NSString* output = [NSString stringWithFormat:@"data:%@;base64,%@", mimeType, b64str];
+                // TODO: Would be faster to base64 encode directly to the final string.
+                NSString* output = [NSString stringWithFormat:@"data:%@;base64,%@", mimeType, [data base64EncodedString]];
                 result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:output];
             } else {
                 result = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsInt:errorCode];
@@ -939,7 +941,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 {
     // arguments
     CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
-    unsigned long long pos = (unsigned long long)[[command argumentAtIndex:1] longLongValue];
+    unsigned long long pos = (unsigned long long)[[command.arguments objectAtIndex:1] longLongValue];
 
     NSObject<CDVFileSystem> *fs = [self filesystemForURL:localURI];
     CDVPluginResult *result = [fs truncateFileAtURL:localURI atPosition:pos];
@@ -958,11 +960,12 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 {
     [self.commandDelegate runInBackground:^ {
         NSString* callbackId = command.callbackId;
+        NSArray* arguments = command.arguments;
 
         // arguments
         CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
-        id argData = [command argumentAtIndex:1];
-        unsigned long long pos = (unsigned long long)[[command argumentAtIndex:2] longLongValue];
+        id argData = [arguments objectAtIndex:1];
+        unsigned long long pos = (unsigned long long)[[arguments objectAtIndex:2] longLongValue];
 
         NSObject<CDVFileSystem> *fs = [self filesystemForURL:localURI];
 
@@ -1000,7 +1003,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 - (void)testFileExists:(CDVInvokedUrlCommand*)command
 {
     // arguments
-    NSString* argPath = [command argumentAtIndex:0];
+    NSString* argPath = [command.arguments objectAtIndex:0];
 
     // Get the file manager
     NSFileManager* fMgr = [NSFileManager defaultManager];
@@ -1015,7 +1018,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
 - (void)testDirectoryExists:(CDVInvokedUrlCommand*)command
 {
     // arguments
-    NSString* argPath = [command argumentAtIndex:0];
+    NSString* argPath = [command.arguments objectAtIndex:0];
 
     // Get the file manager
     NSFileManager* fMgr = [[NSFileManager alloc] init];

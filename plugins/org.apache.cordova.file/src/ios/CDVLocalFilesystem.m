@@ -161,16 +161,6 @@
 
 }
 
-- (BOOL)valueForKeyIsNumber:(NSDictionary*)dict key:(NSString*)key
-{
-    BOOL bNumber = NO;
-    NSObject* value = dict[key];
-    if (value) {
-        bNumber = [value isKindOfClass:[NSNumber class]];
-    }
-    return bNumber;
-}
-
 - (CDVPluginResult *)getFileForURL:(CDVFilesystemURL *)baseURI requestedPath:(NSString *)requestedPath options:(NSDictionary *)options
 {
     CDVPluginResult* result = nil;
@@ -179,13 +169,14 @@
     BOOL exclusive = NO;
     int errorCode = 0;  // !!! risky - no error code currently defined for 0
 
-    if ([self valueForKeyIsNumber:options key:@"create"]) {
+    if ([options valueForKeyIsNumber:@"create"]) {
         create = [(NSNumber*)[options valueForKey:@"create"] boolValue];
     }
-    if ([self valueForKeyIsNumber:options key:@"exclusive"]) {
+    if ([options valueForKeyIsNumber:@"exclusive"]) {
         exclusive = [(NSNumber*)[options valueForKey:@"exclusive"] boolValue];
     }
-    if ([self valueForKeyIsNumber:options key:@"getDir"]) {
+
+    if ([options valueForKeyIsNumber:@"getDir"]) {
         // this will not exist for calls directly to getFile but will have been set by getDirectory before calling this method
         bDirRequest = [(NSNumber*)[options valueForKey:@"getDir"] boolValue];
     }
@@ -444,7 +435,7 @@
         if (fileStream) {
             NSUInteger len = [encData length];
             if (len == 0) {
-                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:(double)len];
+                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:len];
             } else {
                 [fileStream open];
 

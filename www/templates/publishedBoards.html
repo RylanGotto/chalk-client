@@ -8,7 +8,7 @@
             </ion-item>
         <ion-list>
             <ion-item ng-repeat="board in boards | orderBy:'time':true">
-                    <div ng-click="viewBoard(board._id, board.tag)" class="list card">
+                    <div ng-click="viewBoard(board.tag)" class="list card">
                         <a href="">
                             <div class="item item-avatar">
                                 <img src="http://placehold.it/150x150" />

@@ -44,18 +44,17 @@ import android.app.Activity;
 
 public class LocalFilesystem extends Filesystem {
 
+	private String fsRoot;
 	private CordovaInterface cordova;
 
-    public LocalFilesystem(String name, CordovaInterface cordova, String rootPath) {
-        this(name, cordova, Uri.fromFile(new File(rootPath)));
-    }
-	public LocalFilesystem(String name, CordovaInterface cordova, Uri rootUri) {
-        super(rootUri, name);
+	public LocalFilesystem(String name, CordovaInterface cordova, String fsRoot) {
+		this.name = name;
+		this.fsRoot = fsRoot;
 		this.cordova = cordova;
 	}
 
-    public String filesystemPathForFullPath(String fullPath) {
-	    String path = new File(rootUri.getPath(), fullPath).toString();
+	public String filesystemPathForFullPath(String fullPath) {
+	    String path = new File(this.fsRoot, fullPath).toString();
         int questionMark = path.indexOf("?");
         if (questionMark >= 0) {
           path = path.substring(0, questionMark);
@@ -72,8 +71,8 @@ public class LocalFilesystem extends Filesystem {
 	}
 
 	private String fullPathForFilesystemPath(String absolutePath) {
-		if (absolutePath != null && absolutePath.startsWith(rootUri.getPath())) {
-			return absolutePath.substring(rootUri.getPath().length());
+		if (absolutePath != null && absolutePath.startsWith(this.fsRoot)) {
+			return absolutePath.substring(this.fsRoot.length());
 		}
 		return null;
 	}
@@ -144,7 +143,11 @@ public class LocalFilesystem extends Filesystem {
       if (!fp.canRead()) {
           throw new IOException();
       }
-      return LocalFilesystem.makeEntryForURL(inputURL, fp.isDirectory(),  Uri.fromFile(fp).toString());
+      try {
+          return LocalFilesystem.makeEntryForURL(inputURL, fp.isDirectory(),  Uri.fromFile(fp).toString());
+      } catch (JSONException e) {
+    	  throw new IOException();
+      }
 	}
 
 	@Override
@@ -256,7 +259,10 @@ public class LocalFilesystem extends Filesystem {
             File[] files = fp.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].canRead()) {
-                    entries.put(makeEntryForPath(fullPathForFilesystemPath(files[i].getAbsolutePath()), inputURL.filesystemName, files[i].isDirectory(), Uri.fromFile(files[i]).toString()));
+                    try {
+						entries.put(makeEntryForPath(fullPathForFilesystemPath(files[i].getAbsolutePath()), inputURL.filesystemName, files[i].isDirectory(), Uri.fromFile(files[i]).toString()));
+					} catch (JSONException e) {
+					}
                 }
             }
         }
@@ -289,6 +295,10 @@ public class LocalFilesystem extends Filesystem {
     /**
      * Check to see if the user attempted to copy an entry into its parent without changing its name,
      * or attempted to copy a directory into a directory that it contains directly or indirectly.
+     *
+     * @param srcDir
+     * @param destinationDir
+     * @return
      */
     private boolean isCopyOnItself(String src, String dest) {
 

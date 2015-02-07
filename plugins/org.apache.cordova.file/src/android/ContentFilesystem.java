@@ -46,8 +46,8 @@ public class ContentFilesystem extends Filesystem {
 	private CordovaInterface cordova;
 	private CordovaResourceApi resourceApi;
 	
-	public ContentFilesystem(CordovaInterface cordova, CordovaWebView webView) {
-		super(Uri.parse("content://"), "content");
+	public ContentFilesystem(String name, CordovaInterface cordova, CordovaWebView webView) {
+		this.name = name;
 		this.cordova = cordova;
 
 		Class webViewClass = webView.getClass();
@@ -73,7 +73,11 @@ public class ContentFilesystem extends Filesystem {
 	@Override
 	public JSONObject getEntryForLocalURL(LocalFilesystemURL inputURL) throws IOException {
 	    if ("/".equals(inputURL.fullPath)) {
-            return LocalFilesystem.makeEntryForURL(inputURL, true, inputURL.URL.toString());
+            try {
+                return LocalFilesystem.makeEntryForURL(inputURL, true, inputURL.URL.toString());
+            } catch (JSONException e) {
+                throw new IOException();
+            }
 	    }
 
 		// Get the cursor to validate that the file exists
@@ -93,7 +97,11 @@ public class ContentFilesystem extends Filesystem {
 		} else {
 			filePath = "file://" + filePath;
 		}
-        return makeEntryForPath(inputURL.fullPath, inputURL.filesystemName, false /*fp.isDirectory()*/, filePath);
+		try {
+			return makeEntryForPath(inputURL.fullPath, inputURL.filesystemName, false /*fp.isDirectory()*/, filePath);
+		} catch (JSONException e) {
+			throw new IOException();
+		}
 	}
 	
     @Override
