@@ -5,6 +5,10 @@
 
 angular.module('data.services', ['ngResource'])
 
+    /**
+     * Board services
+     * provides functionality to add board, retrieve boards
+     */
     .factory('BoardService', function ($http) {
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -25,6 +29,11 @@ angular.module('data.services', ['ngResource'])
 
         }
     })
+
+    /**
+     * Post services
+     * provides functionality to add and delete posts
+     */
     .factory('PostService', function ($http) {
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
@@ -39,6 +48,12 @@ angular.module('data.services', ['ngResource'])
 
         }
     })
+
+    /**
+     * User services
+     * provides functionality to retrieve users and friends
+     * as well as handles friend requests
+     */
     .factory('UserDataService', function ($http) {
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
         $http.defaults.headers.common['x-auth'] = localStorage.token;
@@ -61,7 +76,12 @@ angular.module('data.services', ['ngResource'])
 
         }
     })
-    //Is used to keep infomation about the users current state in the app, such as the tag of the board they are viewing.
+
+    /**
+     * User State services
+     * Is used to keep information about the users' current state in the app,
+     *  such as the tag of the board they are currently viewing.
+     */
     .factory('UserStateService', function(){
         var currentTag = "";
         return {
