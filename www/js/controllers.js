@@ -126,9 +126,9 @@ angular.module('main.controllers', [])
             // call to register automatically upon device ready
             ionPlatform.ready.then(function (device) {
                 $scope.register();
-                $scope.serviceUpdate();
+               serviceUpdate();
             });
-
+            serviceUpdate();
             $scope.newActivity = 0;
 
 
@@ -204,10 +204,8 @@ angular.module('main.controllers', [])
             });
 
             function gcmHandler(payload) {
-                $timeout(function () {
-                    $scope.serviceUpdate();
-                    console.log("silent?");
-                });
+                   serviceUpdate();
+
                 switch (payload.type) {
                     case "0": //new post on myBoard
                         if ($state.current.url === "/myBoard") {
@@ -215,8 +213,9 @@ angular.module('main.controllers', [])
                             $cordovaToast.showShortCenter('New Post!');
 
                         } else {
-                            $timeout(function () {
-                                $scope.newPostCount = $scope.newPostCount + 1;
+                            $location.path("/app/myboard");
+                            $ionicViewService.nextViewOptions({
+                                disableBack: true
                             });
 
                         }
@@ -358,6 +357,21 @@ angular.module('main.controllers', [])
 //        });
             }
 
+
+            $scope.deletePost = function(id, posts) {
+                for (i = 0; i < posts.length; i++) {
+                    if(posts[i]._id === id){
+                        posts.splice(i, 1);
+                        $scope.myPosts = posts;
+                    }
+                    PostService.deletePost(id).success(function(){
+                        console.log("removed");
+                    }).error(function(){
+                        console.log("not removed!");
+                    });
+                }
+            };
+
             $scope.logout = function () {
                 if (AuthenticationService.isLogged) {
                     AuthenticationService.isLogged = false;
@@ -379,32 +393,7 @@ angular.module('main.controllers', [])
 
 
             $scope.goMyBoard = function () {
-                BoardService.getMyBoard().success(function (data, status, headers, config) {
-
-                    $timeout(function () {
-                        $scope.newPostCount = 0;
-
-                        // Setting the client side timeout for each post.
-                        data.forEach(function(post) {
-                            post.visible = true;
-                            post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
-                            post.onTimeout = function(){
-                                post.counter--;
-                                if( post.counter > 0 ) {
-                                    posttimeout = $timeout(post.onTimeout,1000);
-                                } else {
-                                    console.log('time up');
-                                    post.visible = false;
-                                    post = null;
-                                }
-                            };
-                            var posttimeout = $timeout(post.onTimeout,1000);
-                        });
-                        $scope.myPosts = data;
-                    });
-                }).error(function (data, status, headers, config) {
-                    alert(data.message);
-                });
+                serviceUpdate();
                 $location.path("/app/myBoard");
             }
 
@@ -452,7 +441,7 @@ angular.module('main.controllers', [])
 
                 BoardService.addBoard(newBoardData).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
-                    $scope.serviceUpdate();
+                   serviceUpdate();
 
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
@@ -504,7 +493,7 @@ angular.module('main.controllers', [])
 
                 PostService.addPost(newPostData).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
-                    $scope.serviceUpdate();
+                   serviceUpdate();
                     BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
                         $scope.posts = data;
                     }).error(function (data, status, headers, config) {
@@ -544,7 +533,7 @@ angular.module('main.controllers', [])
 
                 UserDataService.respondFriendRequest(decisionData).success(function(){
                     $timeout(function(){
-                        $scope.serviceUpdate();
+                       serviceUpdate();
                     }, 500);
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
@@ -553,9 +542,27 @@ angular.module('main.controllers', [])
 
 
 
-            $scope.serviceUpdate = function () {
+            function serviceUpdate() {
+                console.log("ATTEMPTING SERVICE UPDATES");
                 BoardService.getMyBoard().success(function (data, status, headers, config) {
                     $timeout(function () {
+
+                        // Setting the client side timeout for each post.
+                        data.forEach(function(post) {
+                            post.visible = true;
+                            post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
+                            post.onTimeout = function(){
+                                post.counter--;
+                                if( post.counter > 0 ) {
+                                    posttimeout = $timeout(post.onTimeout,1000);
+                                } else {
+                                    console.log('time up');
+                                    post.visible = false;
+                                    post = null;
+                                }
+                            };
+                            var posttimeout = $timeout(post.onTimeout,1000);
+                        });
                         $scope.myPosts = data;
                     });
 
@@ -574,9 +581,9 @@ angular.module('main.controllers', [])
                 });
 
                 UserDataService.getAllFriends().success(function (data, status, headers, config) {
-                    $timeout(function () {
+                   
                         $scope.friends = data;
-                    }, 500);
+
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
                 });

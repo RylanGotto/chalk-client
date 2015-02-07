@@ -112,6 +112,9 @@ angular.module('data.services', ['ngResource'])
         return {
             addPost: function(newPostData){
                 return $http.post(serverUrl + '/api/posts', newPostData);
+            },
+            deletePost: function(postId){
+                return $http.delete(serverUrl + '/api/posts/' + postId);
             }
 
         }
