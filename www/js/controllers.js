@@ -213,7 +213,7 @@ angular.module('main.controllers', [])
                             $cordovaToast.showShortCenter('New Post!');
 
                         } else {
-                            $location.path("/app/myboard");
+                            $location.path("/app/myBoard");
                             $ionicViewService.nextViewOptions({
                                 disableBack: true
                             });
