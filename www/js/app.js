@@ -38,6 +38,11 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
     })
 
+/**
+ * Token Interception
+ * Middleware for dealing with the authentication
+ *
+ */
     .config(['$httpProvider', function ($httpProvider) {
         $httpProvider.interceptors.push('TokenInterceptor');
     }])

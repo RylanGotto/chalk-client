@@ -29,7 +29,6 @@ angular.module('init.services', ['ngResource'])
     .factory('UserLoginService', function ($http) {
         var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
-
         return {
             logIn: function (username, password) {
                 return $http.post(serverUrl + '/api/auth/login', {username: username, password: password});

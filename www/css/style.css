@@ -79,3 +79,6 @@ ion-header-bar .title {
 .card {
     overflow: visible;
 }
+.card img {
+    max-width: 100%;
+}
