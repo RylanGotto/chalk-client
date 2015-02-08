@@ -2,7 +2,7 @@
     <ion-header-bar>
         <h1 class="title">Add Post</h1>
         <div class="buttons">
-            <button class="button button-clear" ng-click="closeAddPost()">Close</button>
+            <button class="button button-clear" ng-click="closeAddPost()"><i class="icon ion-close-round"></i></button>
         </div>
     </ion-header-bar>
     <ion-content>
@@ -12,10 +12,7 @@
                     <span class="input-label">Post</span>
                     <textarea ng-model="addPostData.content" />
                 </label>
-                <label class="item item-input">
-                    <span class="input-label">Tag</span>
-                    <textarea ng-model="addBoardData.boardTag" />
-                </label>
+                    <input type="hidden" ng-model="addBoardData.boardTag" />
                 <label class="item item-input">
                     <span class="input-label">Timeout Time</span>
                     <input ng-model="addPostData.timeout" type="number">
@@ -36,13 +33,6 @@
                         </label>
                         Post to my Board
                     </li>
-                    <li ng-click="addBoard()" class="item item-checkbox">
-                        <label class="checkbox">
-                            <input type="checkbox">
-                        </label>
-                        Create a new Board
-                    </li>
-
 
                 </ul>
                 <label class="item">

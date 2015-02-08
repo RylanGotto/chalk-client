@@ -7,7 +7,7 @@
 angular.module('app.controller', [])
 
     .controller('appCtrl',
-    function appCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state) {
+    function appCtrl($scope, $location, $window, $timeout, $http, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state) {
 
         if (AuthenticationService.isLogged) {
 

@@ -72,13 +72,42 @@ ion-header-bar .title {
     bottom: -50px;
 }
 
-.item-body, .item-avatar {
+.item-body, .item-divider {
     background: rgba(255,255,255, 0.8);
     overflow: visible;
+    padding-left: 0;
+    padding-right: 0;
 }
 .card {
     overflow: visible;
 }
 .card img {
     max-width: 100%;
+}
+
+.postOwnerName h2 {
+    text-align: right;
+    margin-right: 50px;
+    color: #6C7A89;
+    font-size: 1.25em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.privacy-Public {
+    background-color: #CF000F;
+    color: #ffffff;
+}
+.privacy-Friends {
+    background-color: #EE8E3E;
+    color: #ffffff;
+}
+.privacy-Private {
+    background-color: #55A46E;
+    color: #ffffff;
+}
+
+.row.noPadd {
+    padding: 0;
+    margin: -10px 0;
 }

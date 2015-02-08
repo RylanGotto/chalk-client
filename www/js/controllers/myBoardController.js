@@ -13,6 +13,8 @@ angular.module('myBoard.controller', [])
             $scope.username = localStorage.username;
             serviceUpdate();
 
+            // set the current view
+            UserStateService.setCurrentTag(localStorage.username + "\'s board");
 
             //Having trouble turning into a service.
             $scope.takePicture = function () {
@@ -48,8 +50,11 @@ angular.module('myBoard.controller', [])
             };
 
             $scope.addPostData = {};
-            $scope.addBoardData = {};
+            $scope.addBoardData = {
+                boardTag: UserStateService.getCurrentTag()
+            };
 
+            // TODO: Remove
             $scope.fillTagField = function () {
                 $scope.addBoardData.boardTag = localStorage.username + "'s Board";
             }
@@ -59,7 +64,7 @@ angular.module('myBoard.controller', [])
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
                     timeout: $scope.addPostData.timeout,
-                    tag: $scope.addBoardData.boardTag,
+                    tag: UserStateService.getCurrentTag(),
                     img: $scope.imgURI
                 };
 
@@ -109,13 +114,13 @@ angular.module('myBoard.controller', [])
                         case 0:
                             UserStateService.setCurrentTag(owner + '\'s Board');
                             $location.path("/app/viewposts");
-
                             break;
                     }
                     return true;
                 },
                 destructiveButtonClicked: function() {
-                    $scope.deletePost();
+                    $scope.deletePost(id);
+                    hideSheet();
                 }
             });
         };
@@ -127,10 +132,9 @@ angular.module('myBoard.controller', [])
          * @param posts
          */
         $scope.deletePost = function (id) {
-            for (i = 0; i < posts.length; i++) {
-                if (posts[i]._id === id) {
-                    posts.splice(i, 1);
-                    $scope.myPosts = posts;
+            for (i = 0; i < $scope.myPosts.length; i++) {
+                if ($scope.myPosts[i]._id === id) {
+                    $scope.myPosts.splice(i, 1);
                 }
                 PostService.deletePost(id).success(function () {
                     console.log("removed");

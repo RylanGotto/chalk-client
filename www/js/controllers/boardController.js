@@ -7,7 +7,7 @@ angular.module('board.controller', [])
 
 
     .controller('boardCtrl',
-    function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
+    function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $cordovaToast, $ionicViewService,
                        PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera) {
 
 
