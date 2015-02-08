@@ -6,7 +6,7 @@
 angular.module('data.services', ['ngResource'])
 
     .factory('BoardService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+ var serverUrl = "http://localhost:8080";
 
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
@@ -26,7 +26,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('PostService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+ var serverUrl = "http://localhost:8080";
 
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
@@ -40,9 +40,12 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('UserDataService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+ var serverUrl = "http://localhost:8080";
         $http.defaults.headers.common['x-auth'] = localStorage.token;
         return {
+            getUserInfo: function(){
+                return $http.post(serverUrl + '/api/users');
+            },
             getAllUsers: function(){
                 return $http.get(serverUrl + '/api/users');
             },
@@ -54,8 +57,25 @@ angular.module('data.services', ['ngResource'])
             },
             sendFriendRequest: function(newFriendData){
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newFriendData);
-            },respondFriendRequest: function(decisionData){
+            },
+            respondFriendRequest: function(decisionData){
                 return $http.post(serverUrl + '/api/friendRequest', decisionData);
+            },
+            //Next section for updating user settings
+            updateUsername : function(newUsername){
+                return $http.put(serverUrl + '/api/users/' + localStorage.userid, newUsername);
+            },
+            updatePassword : function(newPassword){
+                return $http.post(serverUrl + '/api/users/' + localStorage.userid, newPassword);
+            },
+            updateEmail : function(newEmail){
+                return $http.put(serverUrl + '/api/users/' + localStorage.userid, newEmail);
+            },
+            updateMaxPostTime: function(newMaxTime){
+                return $http.put(serverUrl + '/api/users/' + localStorage.userid, newMaxTime);
+            },
+            updateProfileImg: function(newImg){
+                return $http.put(serverUrl + '/api/users/' + localStorage.userid, newImg);
             }
 
 

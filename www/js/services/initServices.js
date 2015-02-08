@@ -27,7 +27,7 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        var serverUrl = "http://localhost:8080";
 
 
         return {
@@ -43,7 +43,7 @@ angular.module('init.services', ['ngResource'])
 
 
     .factory('RegistrationService', function ($http) {
-        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+        var serverUrl = "http://localhost:8080";
 
         return {
             register: function (regInfo) {
@@ -76,7 +76,7 @@ angular.module('init.services', ['ngResource'])
 
             /* Revoke client authentication if 401 is received */
             responseError: function (rejection) {
-                if (rejection != null && rejection.status === 401 && (localStorage.token || AuthenticationService.isAuthenticated)) {
+                if (rejection != null && rejection.status === 400 && (localStorage.token || AuthenticationService.isAuthenticated)) {
                     delete localStorage.token;
                     AuthenticationService.isAuthenticated = false;
                     $location.path("/init/login");

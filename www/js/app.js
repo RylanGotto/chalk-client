@@ -1,5 +1,5 @@
 angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.controller', 'board.controller', 'search.controller',
-    'publishedBoards.controller', 'friends.controller', 'init.services', 'data.services', 'ngCordova'])
+    'publishedBoards.controller', 'friends.controller', 'init.services', 'userSettings.controller', 'data.services', 'ngCordova'])
 
     .run(function ($ionicPlatform, $rootScope, $location, $ionicViewService, AuthenticationService) {
 	$ionicPlatform.ready(function () {
@@ -131,7 +131,20 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 },
                 access: {requiredLogin: true}
 
+            })
+
+            .state('app.userSettings', {
+                url: "/userSettings",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/userSettings.html",
+                        controller: 'userSettingsCtrl'
+                    }
+                },
+                access: {requiredLogin: true}
+
             });
+
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise(function () {
             if (typeof localStorage.jwttoken === 'undefined') {

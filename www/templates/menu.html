@@ -13,13 +13,16 @@
     </header>
     <ion-content class="has-header">
       <ion-list>
-        <ion-item nav-clear menu-close ng-click="goMyBoard()" >
+        <ion-item nav-clear menu-close href="#/app/myBoard">
           My Board <span ng-if="newPostCount > 0">({{newPostCount}})</span>
+        </ion-item>
+        <ion-item nav-clear menu-close href="#/app/userSettings">
+          User Settings
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/search">
           Search for Friends
         </ion-item>
-        <ion-item nav-clear menu-close ng-click="goMyFriends()">
+        <ion-item nav-clear menu-close href="#/app/viewfriends">
           My Friends <span ng-if="newFriendCount > 0">( {{newFriendCount}} ) </span>
         </ion-item>
         <ion-item nav-clear menu-close ng-click="addBoard()">
