@@ -27,7 +27,7 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-        var serverUrl = "http://192.168.0.4:8080";
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
 
         return {
@@ -43,7 +43,7 @@ angular.module('init.services', ['ngResource'])
 
 
     .factory('RegistrationService', function ($http) {
-        var serverUrl = "http://192.168.0.4:8080";
+        var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         return {
             register: function (regInfo) {

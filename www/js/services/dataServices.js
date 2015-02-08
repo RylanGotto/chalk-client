@@ -23,7 +23,7 @@ angular.module('data.services', ['ngResource'])
     }])
 
     .factory('BoardService', function ($http) {
- var serverUrl = "http://192.168.0.4:8080";
+ var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
 
         return {
@@ -51,7 +51,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('PostService', function ($http) {
- var serverUrl = "http://192.168.0.4:8080";
+ var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
 
         return {
@@ -67,7 +67,7 @@ angular.module('data.services', ['ngResource'])
         }
     })
     .factory('UserDataService', function ($http) {
- var serverUrl = "http://192.168.0.4:8080";
+ var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
 
         return {
             getUserInfo: function(token){
