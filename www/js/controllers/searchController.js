@@ -7,22 +7,22 @@ angular.module('search.controller', [])
 
     .controller('searchCtrl',
     function searchCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                        BoardService, PostService, UserDataService, AuthenticationService) {
+                        BoardService, PostService, UserDataService, AuthenticationService, localstorage) {
 
 
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
-            $scope.username = localStorage.username;
             serviceUpdate();
+
 
             $scope.addFriend = function (friendname) {
                 var newFriendData = {
                     friendusername: friendname
                 };
                 UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
-                    alert(data.message);
+                  
                 }).error(function (data, status, headers, config) {
-                    alert(data.message);
+
                 });
             }
 

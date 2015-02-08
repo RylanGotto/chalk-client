@@ -7,11 +7,13 @@ angular.module('friends.controller', [])
 
     .controller('friendsCtrl',
     function friendsCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                         BoardService, UserDataService, UserStateService, AuthenticationService) {
+                         BoardService, UserDataService, UserStateService, AuthenticationService, localstorage) {
 
         if (AuthenticationService.isLogged) {
-            $scope.username = localStorage.username;
+            $scope.username = localstorage.get("username", 0);
             serviceUpdate(); //Mandatory service update
+
+
 
             $scope.viewBoard = function (tag) { //view a friends board posts on click
 
@@ -40,9 +42,7 @@ angular.module('friends.controller', [])
                 }
 
                 UserDataService.respondFriendRequest(decisionData, localstorage.get("token", 0)).success(function () {
-                    $timeout(function () {
                         serviceUpdate();
-                    }, 500);
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
                 });

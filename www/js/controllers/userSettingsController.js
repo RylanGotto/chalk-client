@@ -18,6 +18,8 @@ angular.module('userSettings.controller', [])
             $scope.username = localStorage.username;
             serviceUpdate();
 
+
+
             $scope.takePicture = function () {
                 var options = {
                     quality: 75,

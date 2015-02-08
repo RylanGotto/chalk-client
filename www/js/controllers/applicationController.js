@@ -7,12 +7,12 @@
 angular.module('app.controller', [])
 
     .controller('appCtrl',
-    function appCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state, $http) {
+    function appCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state, $http, localstorage) {
 
         if (AuthenticationService.isLogged) {
 
             $scope.modal = {};
-            $scope.username = localStorage.username;
+            $scope.username = localstorage.get("username", 0);
 
             $scope.notifications = [];
 
@@ -21,6 +21,7 @@ angular.module('app.controller', [])
                 $scope.register(); // This registers a device ID in our chalkserver
             });
             $scope.newActivity = 0;
+
 
 
             $scope.logout = function () { //Set user logged status to false, and delete everything from local storage, then return them to login screen

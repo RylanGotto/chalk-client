@@ -11,10 +11,12 @@ angular.module('myBoard.controller', [])
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
-            $scope.username = localStorage.username;
+            $scope.username = localstorage.get("username", 0);
             serviceUpdate();
 
 
+            
+         
             //Having trouble turning into a service.
             $scope.takePicture = function () {
                 var options = {

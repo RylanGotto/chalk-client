@@ -12,7 +12,7 @@ angular.module('publishedBoards.controller', [])
 
 
         if (AuthenticationService.isLogged) {
-            $scope.username = localStorage.username;
+            $scope.username = localstorage.get("username", 0);
             serviceUpdate();
 
         }
