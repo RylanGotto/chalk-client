@@ -7,7 +7,7 @@
 angular.module('app.controller', [])
 
     .controller('appCtrl',
-    function appCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state) {
+    function appCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService, $cordovaToast, BoardService,  UserDataService, AuthenticationService, $cordovaPush, $cordovaMedia, $cordovaToast, ionPlatform, $state, $http) {
 
         if (AuthenticationService.isLogged) {
 
@@ -40,7 +40,7 @@ angular.module('app.controller', [])
             }
 
             $scope.goMyFriends = function () { //Go to friends page
-                UserDataService.getAllFriends().success(function (data) { //Get all friends
+                UserDataService.getAllFriends(localstorage.get("token", 0)).success(function (data) { //Get all friends
                     $timeout(function () {
                             $scope.friends = data;
 
@@ -79,7 +79,7 @@ angular.module('app.controller', [])
                     maxTTL: $scope.addBoardData.maxTTL
                 };
 
-                BoardService.addBoard(newBoardData).success(function (data, status, headers, config) {
+                BoardService.addBoard(newBoardData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
 
                 }).error(function (data, status, headers, config) {
@@ -101,7 +101,7 @@ angular.module('app.controller', [])
 
                 if (ionic.Platform.isAndroid()) {
                     config = {
-                        "senderID": '393267053393' // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
+                        "senderID": '393267053393'
                     };
                 }
                 else if (ionic.Platform.isIOS()) {
@@ -254,7 +254,7 @@ angular.module('app.controller', [])
                 var user = {user: $scope.username, type: type, token: $scope.regId};
                 console.log("Post token for registered device with data " + JSON.stringify(user));
                 $http.defaults.headers.common['x-auth'] = localStorage.token;
-                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/subscribe", JSON.stringify(user))
+                $http.post("http://192.168.0.4:8080/api/push/subscribe", JSON.stringify(user))
                     .success(function (data, status) {
                         console.log("Token stored, device is successfully subscribed to receive push notifications.");
                     })

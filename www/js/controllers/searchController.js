@@ -19,7 +19,7 @@ angular.module('search.controller', [])
                 var newFriendData = {
                     friendusername: friendname
                 };
-                UserDataService.sendFriendRequest(newFriendData).success(function (data, status, headers, config) {
+                UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     alert(data.message);
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
@@ -27,7 +27,7 @@ angular.module('search.controller', [])
             }
 
             function serviceUpdate(){
-                UserDataService.getAllUsers().success(function (data, status, headers, config) {
+                UserDataService.getAllUsers(localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.users = data;
                     });

@@ -22,7 +22,7 @@ angular.module('publishedBoards.controller', [])
             $location.path("/app/viewposts");
             UserStateService.setCurrentTag(tag);
 
-            BoardService.getBoardByTag(tag).success(function (data, status, headers, config) {
+            BoardService.getBoardByTag(tag, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $scope.posts = data;
             }).error(function (data, status, headers, config) {
                 console.log(data.message);
@@ -31,7 +31,7 @@ angular.module('publishedBoards.controller', [])
         }
 
         function serviceUpdate() {
-            BoardService.getPublishedBoards().success(function (data, status, headers, config) {
+            BoardService.getPublishedBoards(localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $timeout(function () {
                     $scope.boards = data;
                 });

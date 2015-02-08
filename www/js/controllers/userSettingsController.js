@@ -7,16 +7,56 @@ angular.module('userSettings.controller', [])
 
     .controller('userSettingsCtrl',
     function userSettingsCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                        BoardService, PostService, UserDataService, AuthenticationService) {
+                        BoardService, PostService, UserDataService, AuthenticationService, localstorage, $cordovaCamera, $ionicPopup) {
 
 
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
 
+            $scope.updateData = {};
+
             $scope.username = localStorage.username;
             serviceUpdate();
 
-            $scope.updateData = {};
+            $scope.takePicture = function () {
+                var options = {
+                    quality: 75,
+                    destinationType: Camera.DestinationType.DATA_URL,
+                    sourceType: Camera.PictureSourceType.CAMERA,
+                    allowEdit: true,
+                    encodingType: Camera.EncodingType.JPEG,
+                    targetWidth: 300,
+                    targetHeight: 300,
+                    popoverOptions: CameraPopoverOptions,
+                    saveToPhotoAlbum: false
+                };
+
+                $cordovaCamera.getPicture(options).then(function (imageData) {
+                    $scope.updateData.imgURI = "data:image/jpeg;base64," + imageData;
+                    console.log($scope.updateData.imgURI);
+                }, function (err) {
+                    // An error occured. Show a message to the user
+                });
+            }
+
+
+
+            $scope.deleteAccount = function(){
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Delete your account',
+                    template: 'Are you sure you want to delete your account?'
+                });
+                confirmPopup.then(function(res) {
+                    if(res) {
+                        UserDataService.deleteUser(localstorage.get("token", 0)).success(function(){
+                            localStorage.clear();
+                            $location.path("/init/login");
+                        }).error();
+                    }
+                });
+            }
+
+
             $scope.updateAccount = function(){
 
 
@@ -24,12 +64,9 @@ angular.module('userSettings.controller', [])
                     var newUsername = {
                         username : $scope.updateData.username
                     };
-                    console.log(localStorage.token);
-                    UserDataService.updateUsername(newUsername).success(function(data){
-                        console.log(data.token);
-                        localStorage.clear();
-                        localStorage.username = data.username;
-                        localStorage.token = data.token;
+                    UserDataService.updateUsername(newUsername, localstorage.get("token", 0)).success(function(data){
+                        localstorage.set("token", data.token);
+                        localstorage.set("username", data.username);
                         alert("Username Updated to: " + data.username);
                     }).error(function(){
                         alert("Unable to update username");
@@ -40,7 +77,7 @@ angular.module('userSettings.controller', [])
                     var newEmail = {
                         email : $scope.updateData.email
                     };
-                    UserDataService.updateEmail(newEmail).success(function(data){
+                    UserDataService.updateEmail(newEmail, localstorage.get("token", 0)).success(function(data){
 
                         alert("Email Updated to: " + data.email);
                     }).error(function(){
@@ -52,24 +89,38 @@ angular.module('userSettings.controller', [])
                     var newMaxTTL = {
                         maxTTL : $scope.updateData.maxTTL
                     };
-                    UserDataService.updateEmail(newMaxTTL).success(function(data){
+                    UserDataService.updateMaxPostTime(newMaxTTL, localstorage.get("token", 0)).success(function(data){
                         alert("maxTTL Updated to: " + data.maxTTL);
                     }).error(function(){
                         alert("Unable to update maxTTL");
                     });
                 }
+
+                if($scope.updateData.imgURI !== "" && $scope.updateData.imgURI !== undefined){
+                    var newImg = {
+                        img : $scope.updateData.imgURI
+                    };
+                    UserDataService.updateProfileImg(newImg, localstorage.get("token", 0)).success(function(data){
+                        alert("Profile Image updated");
+                    }).error(function(){
+                        alert("Unable to update Profile Image");
+                    });
+                }
+
+                if($scope.updateData.newPassword !== "" && $scope.updateData.newPassword !== undefined  && $scope.updateData.oldPassword !== "" && $scope.updateData.oldPassword !== undefined){
+                    var passInfo = {
+                        oldpassword : $scope.updateData.oldPassword,
+                        newpassword : $scope.updateData.newPassword
+                    };
+                    UserDataService.updatePassword(passInfo, localstorage.get("token", 0)).success(function(data){
+                        alert("Password updated");
+                    }).error(function(){
+                        alert("Unable to update password");
+                    });
+                }
             }
 
-            if($scope.updateData.imgURI !== "" && $scope.updateData.imgURI !== undefined){
-                var newImg = {
-                    img : $scope.updateData.imgURI
-                };
-                UserDataService.updateEmail(newImg).success(function(data){
-                    alert("maxTTL Updated to: " + data.imgURI);
-                }).error(function(){
-                    alert("Unable to update maxTTL");
-                });
-            }
+
 
             }
 
@@ -78,12 +129,14 @@ angular.module('userSettings.controller', [])
 
 
         function serviceUpdate(){
-            UserDataService.getUserInfo().success(function(user){
+            UserDataService.getUserInfo(localstorage.get("token", 0)).success(function(user){
                 if(user){
+                    $scope.updateData.firstName = user.firstname;
+                    $scope.updateData.lastName = user.lastname;
                     $scope.updateData.username = user.username;
                     $scope.updateData.email = user.email;
                     $scope.updateData.maxTTL = user.maxTTL;
-                    $scope.updateData.imgURI = user.img;
+                    $scope.updateData.imgURI = user.profileImage;
                 }
             }).error(function(){
 

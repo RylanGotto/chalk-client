@@ -18,7 +18,7 @@ angular.module('friends.controller', [])
                 $location.path("/app/viewposts");
                 UserStateService.setCurrentTag(tag);
 
-                BoardService.getBoardByTag(tag).success(function (data, status, headers, config) {
+                BoardService.getBoardByTag(tag, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     $scope.posts = data;
                 }).error(function (data, status, headers, config) {
                     console.log(data.message);
@@ -39,7 +39,7 @@ angular.module('friends.controller', [])
                     friendRequestID: friendRequestID
                 }
 
-                UserDataService.respondFriendRequest(decisionData).success(function () {
+                UserDataService.respondFriendRequest(decisionData, localstorage.get("token", 0)).success(function () {
                     $timeout(function () {
                         serviceUpdate();
                     }, 500);
@@ -51,7 +51,7 @@ angular.module('friends.controller', [])
 
             function serviceUpdate() {
 
-                UserDataService.getAllFriends().success(function (data, status, headers, config) {
+                UserDataService.getAllFriends(localstorage.get("token", 0)).success(function (data, status, headers, config) {
 
                     $scope.friends = data;
 
@@ -59,7 +59,7 @@ angular.module('friends.controller', [])
                     alert(data.message);
                 });
 
-                UserDataService.getFriendRequest().success(function (data, status, headers, config) {
+                UserDataService.getFriendRequest(localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     $timeout(function () {
                         $scope.friendRequests = data;
                         $scope.newFriendCount = data.length;

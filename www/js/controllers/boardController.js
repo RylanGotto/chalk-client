@@ -62,7 +62,7 @@ angular.module('board.controller', [])
                     img: $scope.imgURI
                 };
 
-                PostService.addPost(newPostData).success(function (data, status, headers, config) {//Save new post
+                PostService.addPost(newPostData, localstorage.get("token", 0)).success(function (data, status, headers, config) {//Save new post
                     $scope.fromServer = data.message;
                     serviceUpdate(); //update view for real time'nesss!
                     $cordovaToast.showShortBottom("posted"); //show a posted toast on success
@@ -88,7 +88,7 @@ angular.module('board.controller', [])
 
             //Update the board currently being viewed, UserStateService supplies us with the current tag we are on.
             //UserStateService does is not concered with the my board tag.
-            BoardService.getBoardByTag(UserStateService.getCurrentTag()).success(function (data, status, headers, config) {
+            BoardService.getBoardByTag(UserStateService.getCurrentTag(localstorage.get("token", 0))).success(function (data, status, headers, config) {
                 $timeout(function () {
 
                     // Setting the client side timeout for each post.

@@ -27,7 +27,7 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-        var serverUrl = "http://localhost:8080";
+        var serverUrl = "http://192.168.0.4:8080";
 
 
         return {
@@ -43,7 +43,7 @@ angular.module('init.services', ['ngResource'])
 
 
     .factory('RegistrationService', function ($http) {
-        var serverUrl = "http://localhost:8080";
+        var serverUrl = "http://192.168.0.4:8080";
 
         return {
             register: function (regInfo) {
@@ -85,4 +85,5 @@ angular.module('init.services', ['ngResource'])
                 return $q.reject(rejection);
             }
         };
-    });
+    })
+

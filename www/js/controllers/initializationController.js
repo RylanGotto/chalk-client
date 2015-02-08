@@ -8,7 +8,7 @@ angular.module('init.controller', [])
     .controller('initCtrl',
         function ($scope, $location, $window, $timeout, $ionicModal, $ionicViewService,
                   $cordovaToast, UserLoginService, AuthenticationService, RegistrationService,
-                  $cordovaCamera) {
+                  $cordovaCamera, localstorage) {
 
             $scope.modal = {};
             $scope.regData = {};
@@ -30,7 +30,8 @@ angular.module('init.controller', [])
                 var dataObj = {
                     username: $scope.regData.username,
                     password: $scope.regData.password,
-                    confpass: $scope.regData.confPassword,
+                    firstname: $scope.regData.fristname,
+                    lastname: $scope.regData.lastname,
                     email: $scope.regData.email,
                     img: $scope.imgURI
                 };
@@ -58,9 +59,9 @@ angular.module('init.controller', [])
 
                     UserLoginService.logIn(username, password).success(function (data) { //Check to see if username and password are valid
                         AuthenticationService.isLogged = true;//if valid set user id, username, and json web token to localStorage
-                        localStorage.username = data.usr.username;//Then welcome the user
-                        localStorage.userid = data.usr._id;
-                        localStorage.token = data.tok;
+                        localstorage.set("username", data.usr.username);//Then welcome the user
+                        localstorage.set("userid", data.usr._id);
+                        localstorage.set("token", data.tok);
                         $scope.fromServer = "Welcome, " + data.usr.username;
 
                     }).error(function (status, data) {

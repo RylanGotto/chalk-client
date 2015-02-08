@@ -8,11 +8,11 @@
                 <div class="list">
                     <label class="item item-input item-stacked-label">
                         <span class="input-label">First Name</span>
-                        <input type="text" ng-model="firstName" disabled="disabled">
+                        <input type="text" ng-model="updateData.firstName" disabled="disabled">
                     </label>
                     <label class="item item-input item-stacked-label">
                         <span class="input-label">Last Name</span>
-                        <input type="text" ng-model="lastName" disabled="disabled" >
+                        <input type="text" ng-model="updateData.lastName" disabled="disabled" >
                     </label>
                     <label class="item item-input item-stacked-label">
                         <span class="input-label">Username</span>
@@ -34,11 +34,14 @@
                         <span class="input-label">New Password</span>
                         <input type="text" ng-model="updateData.newPassword">
                     </label>
-                    <label class="item item-input item-stacked-label">
-                        <span class="input-label">Update Profile Img</span>
+                    <label class="item item-input">
                         <button class="button" ng-click="takePicture()">Take Picture</button>
-                        <img ng-show="imgURI !== undefined" ng-src="{{updateData.imgURI}}">
                     </label>
+                    <div class="card">
+                        <div class="item item-text-wrap">
+                            <img ng-show="updateData.imgURI !== undefined" ng-src="{{updateData.imgURI}}">
+                        </div>
+                    </div>
                     <label class="item item-input item-stacked-label">
                         <button class="button button-assertive" ng-click="deleteAccount()">
                             Delete Account

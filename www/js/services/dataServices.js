@@ -5,77 +5,119 @@
 
 angular.module('data.services', ['ngResource'])
 
-    .factory('BoardService', function ($http) {
- var serverUrl = "http://localhost:8080";
-
-        $http.defaults.headers.common['x-auth'] = localStorage.token;
+    .factory('localstorage', ['$window', function($window) {
         return {
-            addBoard: function(newBoardData){
+            set: function(key, value) {
+                $window.localStorage[key] = value;
+            },
+            get: function(key, defaultValue) {
+                return $window.localStorage[key] || defaultValue;
+            },
+            setObject: function(key, value) {
+                $window.localStorage[key] = JSON.stringify(value);
+            },
+            getObject: function(key) {
+                return JSON.parse($window.localStorage[key] || '{}');
+            }
+        }
+    }])
+
+    .factory('BoardService', function ($http) {
+ var serverUrl = "http://192.168.0.4:8080";
+
+
+        return {
+            addBoard: function(newBoardData, token){
+                $http.defaults.headers.common['x-auth'] = token;
+
                 return $http.post(serverUrl + '/api/boards', newBoardData);
             },
-            getPublishedBoards: function(){
+            getPublishedBoards: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
+
                 return $http.get(serverUrl + '/api/boards');
             },
-            getMyBoard: function(){
+            getMyBoard: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
+
                 return $http.get(serverUrl + '/api/myboard');
             },
-            getBoardByTag: function(Tag){
-                return $http.get(serverUrl + '/api/boards/' + Tag);
+            getBoardByTag: function(tag, token){
+                $http.defaults.headers.common['x-auth'] = token;
+
+                return $http.get(serverUrl + '/api/boards/' + tag);
             }
 
         }
     })
     .factory('PostService', function ($http) {
- var serverUrl = "http://localhost:8080";
+ var serverUrl = "http://192.168.0.4:8080";
 
-        $http.defaults.headers.common['x-auth'] = localStorage.token;
+
         return {
-            addPost: function(newPostData){
+            addPost: function(newPostData, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/posts', newPostData);
             },
-            deletePost: function(postId){
+            deletePost: function(postId, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.delete(serverUrl + '/api/posts/' + postId);
             }
 
         }
     })
     .factory('UserDataService', function ($http) {
- var serverUrl = "http://localhost:8080";
-        $http.defaults.headers.common['x-auth'] = localStorage.token;
+ var serverUrl = "http://192.168.0.4:8080";
+
         return {
-            getUserInfo: function(){
+            getUserInfo: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/users');
             },
-            getAllUsers: function(){
+            getAllUsers: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.get(serverUrl + '/api/users');
             },
-            getAllFriends: function(){
+            getAllFriends: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/users');
             },
-            getFriendRequest: function(){
+            getFriendRequest: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.get(serverUrl + '/api/friendRequest');
             },
-            sendFriendRequest: function(newFriendData){
+            sendFriendRequest: function(newFriendData, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newFriendData);
             },
-            respondFriendRequest: function(decisionData){
+            respondFriendRequest: function(decisionData, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/friendRequest', decisionData);
             },
             //Next section for updating user settings
-            updateUsername : function(newUsername){
+            updateUsername : function(newUsername, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newUsername);
             },
-            updatePassword : function(newPassword){
+            updatePassword : function(newPassword, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/users/' + localStorage.userid, newPassword);
             },
-            updateEmail : function(newEmail){
+            updateEmail : function(newEmail, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newEmail);
             },
-            updateMaxPostTime: function(newMaxTime){
+            updateMaxPostTime: function(newMaxTime, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newMaxTime);
             },
-            updateProfileImg: function(newImg){
+            updateProfileImg: function(newImg, token){
+                $http.defaults.headers.common['x-auth'] = token;
                 return $http.put(serverUrl + '/api/users/' + localStorage.userid, newImg);
+            },
+            deleteUser: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
+                return $http.delete(serverUrl + '/api/users/' + localStorage.userid);
             }
 
 

@@ -7,7 +7,7 @@ angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
     function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                         $cordovaToast, BoardService, PostService, AuthenticationService, $cordovaCamera) {
+                         $cordovaToast, BoardService, PostService, AuthenticationService, localstorage, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
@@ -64,14 +64,10 @@ angular.module('myBoard.controller', [])
                     img: $scope.imgURI
                 };
 
-                PostService.addPost(newPostData).success(function (data, status, headers, config) {
+                PostService.addPost(newPostData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
                     serviceUpdate();
-                    BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
-                        $scope.posts = data;
-                    }).error(function (data, status, headers, config) {
-                        console.log(data.message);
-                    });
+
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
                 });
@@ -94,7 +90,7 @@ angular.module('myBoard.controller', [])
                     posts.splice(i, 1);
                     $scope.myPosts = posts;
                 }
-                PostService.deletePost(id).success(function () {
+                PostService.deletePost(id, localstorage.get("token", 0)).success(function () {
                     console.log("removed");
                 }).error(function () {
                     console.log("not removed!");
@@ -103,7 +99,7 @@ angular.module('myBoard.controller', [])
         };
 
         function serviceUpdate() {
-            BoardService.getMyBoard().success(function (data, status, headers, config) {
+            BoardService.getMyBoard(localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $timeout(function () {
 
                     // Setting the client side timeout for each post.
