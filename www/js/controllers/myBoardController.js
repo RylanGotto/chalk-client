@@ -6,8 +6,7 @@
 angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
-    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                         $cordovaToast, BoardService, PostService, AuthenticationService, $cordovaCamera) {
+    function myBoardCtrl($scope, $state, $location, $window, $timeout, $interval, $ionicModal, $ionicActionSheet,$ionicViewService, $cordovaToast, BoardService, PostService, AuthenticationService, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
@@ -34,7 +33,7 @@ angular.module('myBoard.controller', [])
                 }, function (err) {
                     // An error occured. Show a message to the user
                 });
-            }
+            };
 
             $ionicModal.fromTemplateUrl('templates/modals/addPost.html', {
                 scope: $scope
@@ -88,7 +87,46 @@ angular.module('myBoard.controller', [])
 
         }
 
-        $scope.deletePost = function (id, posts) {
+        /**
+         * Shows an 'Action sheet' (slide up menu)
+         * when a post is clicked.
+         */
+        $scope.showPostActions = function(id, owner) {
+
+            // Show the action sheet
+            var hideSheet = $ionicActionSheet.show({
+                titleText: 'Post Options',
+                buttons: [
+                    { text: 'Reply' },
+                ],
+                destructiveText: 'Delete',
+                cancelText: 'Cancel',
+                cancel: function() {
+                    hideSheet();
+                },
+                buttonClicked: function(index) {
+                    switch (index) {
+                        case 0:
+                            $state.go('app.viewposts');
+                            //viewBoard( owner + + '\'s Board');
+                            //$scope.addPost();
+                            break;
+                    }
+                    return true;
+                },
+                destructiveButtonClicked: function() {
+                    $scope.deletePost();
+                }
+            });
+        };
+
+        /**
+         * Loop through the posts, find the given id and
+         * use the PostService to delete the post.
+         * @param id
+         * @param posts
+         */
+        $scope.deletePost = function (id) {
             for (i = 0; i < posts.length; i++) {
                 if (posts[i]._id === id) {
                     posts.splice(i, 1);
