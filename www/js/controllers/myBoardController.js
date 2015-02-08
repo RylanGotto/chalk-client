@@ -13,7 +13,7 @@ angular.module('myBoard.controller', [])
             $scope.modal = {};
             $scope.username = localstorage.get("username", 0);
             serviceUpdate();
-
+            $scope.$on('postToMyBoard', function(event, payload) { serviceUpdate(); });
 
             
          
