@@ -6,7 +6,7 @@
 angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
-    function myBoardCtrl($scope, $state, $location, $window, $timeout, $interval, $ionicModal, $ionicActionSheet,$ionicViewService, $cordovaToast, BoardService, PostService, AuthenticationService, $cordovaCamera) {
+    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicActionSheet,$ionicViewService, $cordovaToast, BoardService, PostService, AuthenticationService, UserStateService, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
@@ -107,9 +107,9 @@ angular.module('myBoard.controller', [])
                 buttonClicked: function(index) {
                     switch (index) {
                         case 0:
-                            $state.go('app.viewposts');
-                            //viewBoard( owner + + '\'s Board');
-                            //$scope.addPost();
+                            UserStateService.setCurrentTag(owner + '\'s Board');
+                            $location.path("/app/viewposts");
+
                             break;
                     }
                     return true;
