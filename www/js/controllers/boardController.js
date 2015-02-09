@@ -93,6 +93,9 @@ angular.module('board.controller', [])
 
         }
 
+        $scope.addPostData.timeout = 1;
+        $scope.addPostData.privacyLevel = "Private";
+
         function serviceUpdate(){
 
             //Update the board currently being viewed, UserStateService supplies us with the current tag we are on.
