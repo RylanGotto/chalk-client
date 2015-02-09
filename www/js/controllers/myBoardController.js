@@ -7,7 +7,7 @@ angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
     function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicLoading, $ionicViewService,
-                         $cordovaToast, BoardService, PostService, AuthenticationService, localstorage, $cordovaCamera) {
+                         $cordovaToast, BoardService, PostService, AuthenticationService, localstorage, $cordovaCamera, UserStateService) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
