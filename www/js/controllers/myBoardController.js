@@ -125,6 +125,7 @@ angular.module('myBoard.controller', [])
                     switch (index) {
                         case 0:
                             UserStateService.setCurrentTag(owner + '\'s Board');
+                            UserStateService.setReply(true);
                             $location.path("/app/viewposts");
                             break;
                     }

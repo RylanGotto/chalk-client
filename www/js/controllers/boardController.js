@@ -14,6 +14,8 @@ angular.module('board.controller', [])
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
 
+
+
             $scope.username = localstorage.get("username", 0);
             serviceUpdate(); //Mandatory services update
 
@@ -48,6 +50,14 @@ angular.module('board.controller', [])
                 $scope.modal.addPost.show();
 
             };
+
+            if(UserStateService.getReply() ){
+                $timeout(function(){
+                    $scope.modal.addPost.show();
+                    UserStateService.setReply(false);
+                }, 300);
+
+            }
 
             $scope.addPostData = {};
             $scope.addBoardData = {};

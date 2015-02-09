@@ -146,12 +146,19 @@ angular.module('data.services', ['ngResource'])
      */
     .factory('UserStateService', function(){
         var currentTag = "";
+        var reply = false;
         return {
             setCurrentTag: function(tag){
                 currentTag = tag;
             },
             getCurrentTag: function(){
                 return currentTag;
+            },
+            setReply: function(updatedReply){
+                reply = updatedReply;
+            },
+            getReply: function(){
+                return reply;
             }
         }
     })
