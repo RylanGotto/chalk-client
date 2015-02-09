@@ -7,7 +7,7 @@ angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
     function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicLoading, $ionicViewService,
-                         $cordovaToast, BoardService, PostService, AuthenticationService, localstorage, $cordovaCamera) {
+                         $cordovaToast, BoardService, PostService, AuthenticationService, UserStateService, localstorage, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
@@ -67,6 +67,7 @@ angular.module('myBoard.controller', [])
             /**
              * Assemble the data inputted and send to the PostService for saving
              */
+
             $scope.doAddPost = function () {
                 $scope.showLoading();
                 var newPostData = {
@@ -76,8 +77,7 @@ angular.module('myBoard.controller', [])
                     tag: UserStateService.getCurrentTag(),
                     img: $scope.imgURI
                 };
-
-                PostService.addPost(newPostData)
+                PostService.addPost(newPostData, localstorage.get("token", 0))
                     .success(function (data, status, headers, config) {
                         $scope.closeAddPost();
                         $scope.hideLoading();
