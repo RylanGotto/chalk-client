@@ -83,7 +83,8 @@ angular.module('myBoard.controller', [])
                         $scope.hideLoading();
                         $scope.fromServer = data.message;
                         serviceUpdate();
-                        BoardService.getBoardByTag($scope.polingTag)
+                        console.log(UserStateService.getCurrentTag());
+                        BoardService.getBoardByTag(UserStateService.getCurrentTag())
                             .success(function (data, status, headers, config) {
                                 $scope.posts = data;
                             })
