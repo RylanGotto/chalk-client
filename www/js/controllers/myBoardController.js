@@ -6,7 +6,7 @@
 angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
-    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicActionSheet,$ionicViewService, $cordovaToast, BoardService, PostService, AuthenticationService, UserStateService, $cordovaCamera) {
+    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicLoading, $ionicActionSheet,$ionicViewService, $cordovaToast, BoardService, PostService, AuthenticationService, UserStateService, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
@@ -14,7 +14,7 @@ angular.module('myBoard.controller', [])
             serviceUpdate();
 
             // set the current view
-            UserStateService.setCurrentTag(localStorage.username + "\'s board");
+            UserStateService.setCurrentTag(localStorage.username + "\'s Board");
 
             //Having trouble turning into a service.
             $scope.takePicture = function () {
@@ -37,29 +37,34 @@ angular.module('myBoard.controller', [])
                 });
             };
 
+            /**
+             * Load the addPost modal
+             */
             $ionicModal.fromTemplateUrl('templates/modals/addPost.html', {
                 scope: $scope
             }).then(function (modal) {
                 $scope.modal.addPost = modal;
             });
 
-            // Open the addpost modal
+            /**
+             * Open the addPost Modal
+             */
             $scope.addPost = function () {
                 $scope.modal.addPost.show();
-
             };
 
+            /**
+             * Blank objs to be filled in by user
+             * @type {{}}
+             */
             $scope.addPostData = {};
-            $scope.addBoardData = {
-                boardTag: UserStateService.getCurrentTag()
-            };
+            $scope.addBoardData = {};
 
-            // TODO: Remove
-            $scope.fillTagField = function () {
-                $scope.addBoardData.boardTag = localStorage.username + "'s Board";
-            }
-
+            /**
+             * Assemble the data inputted and send to the PostService for saving
+             */
             $scope.doAddPost = function () {
+                $scope.showLoading();
                 var newPostData = {
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
@@ -68,21 +73,24 @@ angular.module('myBoard.controller', [])
                     img: $scope.imgURI
                 };
 
-                PostService.addPost(newPostData).success(function (data, status, headers, config) {
-                    $scope.fromServer = data.message;
-                    serviceUpdate();
-                    BoardService.getBoardByTag($scope.polingTag).success(function (data, status, headers, config) {
-                        $scope.posts = data;
-                    }).error(function (data, status, headers, config) {
-                        console.log(data.message);
+                PostService.addPost(newPostData)
+                    .success(function (data, status, headers, config) {
+                        $scope.closeAddPost();
+                        $scope.hideLoading();
+                        $scope.fromServer = data.message;
+                        serviceUpdate();
+                        BoardService.getBoardByTag($scope.polingTag)
+                            .success(function (data, status, headers, config) {
+                                $scope.posts = data;
+                            })
+                            .error(function (data, status, headers, config) {
+                                console.log(data.message);
+                            });
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.hideLoading();
+                        $scope.fromServer = data.message;
                     });
-                }).error(function (data, status, headers, config) {
-                    $scope.fromServer = data.message;
-                });
-
-                $timeout(function () {
-                    $scope.closeAddPost();
-                }, 20000);
             };
 
             // Close open add post modal
@@ -172,5 +180,20 @@ angular.module('myBoard.controller', [])
                 alert(data.message);
             });
         }
+
+        /**
+         * Show loading animation & block user input
+         */
+        $scope.showLoading = function() {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+        };
+        /**
+         * hide loading animation
+         */
+        $scope.hideLoading = function(){
+            $ionicLoading.hide();
+        };
 
     });

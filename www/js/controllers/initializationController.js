@@ -6,7 +6,7 @@
 angular.module('init.controller', [])
 
     .controller('initCtrl',
-        function ($scope, $location, $window, $timeout, $ionicModal, $ionicViewService,
+        function ($scope, $location, $window, $timeout, $ionicModal, $ionicLoading, $ionicViewService,
                   $cordovaToast, UserLoginService, AuthenticationService, RegistrationService,
                   $cordovaCamera) {
 
@@ -55,26 +55,40 @@ angular.module('init.controller', [])
 
             $scope.doLogin = function (username, password) { //Login a user on click
                 if (username !== undefined && password !== undefined) {
+                    $scope.showLoading();
+                    UserLoginService.logIn(username, password)
+                        .success(function (data) { //Check to see if username and password are valid
+                            $scope.hideLoading();
+                            //if valid set user id, username, and json web token to localStorage
+                            AuthenticationService.isLogged = true;
+                            localStorage.username = data.usr.username;//Then welcome the user
+                            localStorage.userid = data.usr._id;
+                            localStorage.token = data.tok;
+                            $scope.fromServer = "Welcome, " + data.usr.username;
 
-                    UserLoginService.logIn(username, password).success(function (data) { //Check to see if username and password are valid
-                        AuthenticationService.isLogged = true;//if valid set user id, username, and json web token to localStorage
-                        localStorage.username = data.usr.username;//Then welcome the user
-                        localStorage.userid = data.usr._id;
-                        localStorage.token = data.tok;
-                        $scope.fromServer = "Welcome, " + data.usr.username;
-
-                    }).error(function (status, data) {
-                        $scope.fromServer = data.message;
-                    });
-                    $timeout(function () { //after 2.5 seconds close login modal, and if logged in redirect user to their Board
-                        $scope.closeLogin();
-                        $ionicViewService.nextViewOptions({
-                            disableBack: true
+                            $scope.closeLogin();
+                            $ionicViewService.nextViewOptions({
+                                disableBack: true
+                            });
+                            if (AuthenticationService.isLogged) {
+                                $location.path('/app/myBoard');
+                            }
+                        })
+                        .error(function (status, data) {
+                            $scope.hideLoading();
+                            $scope.fromServer = data.message;
                         });
-                        if (AuthenticationService.isLogged) {
-                            $location.path('/app/myBoard');
-                        }
-                    }, 2500);
+
+                    //after 2.5 seconds close login modal, and if logged in redirect user to their Board
+                    //$timeout(function () {
+                    //    $scope.closeLogin();
+                    //    $ionicViewService.nextViewOptions({
+                    //        disableBack: true
+                    //    });
+                    //    if (AuthenticationService.isLogged) {
+                    //        $location.path('/app/myBoard');
+                    //    }
+                    //}, 2500);
                 }
             }
 
@@ -111,6 +125,21 @@ angular.module('init.controller', [])
 
             $scope.closeLogin = function () {
                 $scope.modal.login.hide();
+            };
+
+            /**
+             * Show loading animation & block user input
+             */
+            $scope.showLoading = function() {
+                $ionicLoading.show({
+                    template: 'Loading...'
+                });
+            };
+            /**
+             * hide loading animation
+             */
+            $scope.hideLoading = function(){
+                $ionicLoading.hide();
             };
 
         }

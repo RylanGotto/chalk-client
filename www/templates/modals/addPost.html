@@ -12,10 +12,17 @@
                     <span class="input-label">Post</span>
                     <textarea ng-model="addPostData.content" />
                 </label>
-                    <input type="hidden" ng-model="addBoardData.boardTag" />
                 <label class="item item-input">
-                    <span class="input-label">Timeout Time</span>
-                    <input ng-model="addPostData.timeout" type="number">
+                    <span class="input-label">Lifespan</span>
+                    <select ng-model="addPostData.timeout">
+                        <option value="1">1 Min</option>
+                        <option value="10">10 Min</option>
+                        <option value="60">1 hr</option>
+                        <option value="360">6 hrs</option>
+                        <option value="1440">1 Day</option>
+                        <option value="10080">1 Week</option>
+                        <option value="43200">1 Month</option>
+                    </select>
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Privacy Level</span>
@@ -25,16 +32,6 @@
                     <option>Friends</option>
                 </select>
                     </label>
-
-                <ul class="list">
-                    <li class="item item-checkbox">
-                        <label ng-click="fillTagField()" class="checkbox">
-                            <input type="checkbox">
-                        </label>
-                        Post to my Board
-                    </li>
-
-                </ul>
                 <label class="item">
                     <button class="button button-block button-positive" type="submit">Post</button>
                 </label>
