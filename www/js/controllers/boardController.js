@@ -7,17 +7,17 @@ angular.module('board.controller', [])
 
 
     .controller('boardCtrl',
-    function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, $cordovaToast, localstorage) {
+    function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $cordovaToast, $ionicViewService,
+                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, localstorage) {
 
 
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
 
+
+
             $scope.username = localstorage.get("username", 0);
             serviceUpdate(); //Mandatory services update
-
-
 
             $scope.takePicture = function () {
                 var options = {
@@ -50,6 +50,14 @@ angular.module('board.controller', [])
                 $scope.modal.addPost.show();
 
             };
+
+            if(UserStateService.getReply() ){
+                $timeout(function(){
+                    $scope.modal.addPost.show();
+                    UserStateService.setReply(false);
+                }, 300);
+
+            }
 
             $scope.addPostData = {};
             $scope.addBoardData = {};

@@ -8,7 +8,7 @@ angular.module('publishedBoards.controller', [])
 
     .controller('publishedCtrl',
     function publishedBoardsCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                        BoardService, AuthenticationService) {
+                        BoardService, AuthenticationService, localstorage) {
 
 
         if (AuthenticationService.isLogged) {

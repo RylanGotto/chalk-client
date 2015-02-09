@@ -20,16 +20,29 @@
                                 <img ng-src="{{k.img}}" />
                             </div>
                         </div>
-                        <div class="item item-avatar">
-                            <p>Privacy: {{k.privacyLevel}} | Posted: {{k.dateCreated | date:'medium' : 'UTC'}} </p>
-                            <p>Erased in: {{ k.counter }}s</p>
-                            <a href="" ng-click="viewBoard(k.owner + '\'s Board')">
+                        <div class="item item-divider">
+                            <div class="row noPadd">
+                                <div class="col"><h4>{{k.dateCreated | date:'medium' : 'UTC'}}</h4></div>
+                            </div>
+                            <div class="row noPadd">
+                                <div class="col col-20">
+                                    <button class="button button-block button-small icon ion-gear-a" ng-click="showPostActions(k._id, k.owner)"></button>
+                                </div>
+                                <div class="col col-40">
+                                    <button class="button button-block button-small button-energized icon-left ion-information">
+                                        {{ k.counter }}s left
+                                    </button>
+                                </div>
+                                <div class="col col-40">
+                                    <button class="button button-block button-small icon-left ion-eye privacy-{{k.privacyLevel}}">
+                                        {{k.privacyLevel}}
+                                    </button>
+                                </div>
+                            </div>
+                            <a class="postOwnerName" href="" ng-click="viewBoard(k.owner + '\'s Board')">
                                 <h2>{{k.owner}}</h2>
                             </a>
                             <img class="profilePic" src="http://placehold.it/100x100">
-                            <button class="button button-assertive" ng-click="deletePost(k._id, myPosts)">
-                                Delete
-                            </button>
                         </div>
                     </div>
                 </ion-item>
