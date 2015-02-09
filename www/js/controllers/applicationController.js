@@ -249,7 +249,7 @@ angular.module('app.controller', [])
                 var user = {user: $scope.username, type: type, token: $scope.regId};
                 console.log("Post token for registered device with data " + JSON.stringify(user));
                 $http.defaults.headers.common['x-auth'] = localStorage.token;
-                $http.post("http://192.168.0.4:8080/api/push/subscribe", JSON.stringify(user))
+                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/subscribe", JSON.stringify(user))
                     .success(function (data, status) {
                         console.log("Token stored, device is successfully subscribed to receive push notifications.");
                     })
