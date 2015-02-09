@@ -150,7 +150,7 @@ angular.module('app.controller', [])
 
                 switch (payload.type) {
                     case "0": //new post on my board
-                        $scope.$broadcast('postToMyBoard', ""); //broad cast a newpost and run the related service update
+                        $scope.$broadcast('updateMyBoard', ""); //broad cast a newpost and run the related service update
                         $cordovaToast.showShortCenter('New Post!');//if they are show a toast notification
                         if (!$state.current.url === "/myBoard") { //Check if user is currently already on myboard
 
