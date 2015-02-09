@@ -38,6 +38,11 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
     })
 
+/**
+ * Token Interception
+ * Middleware for dealing with the authentication
+ *
+ */
     .config(['$httpProvider', function ($httpProvider) {
         $httpProvider.interceptors.push('TokenInterceptor');
     }])
@@ -47,7 +52,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
         $stateProvider
 
-
+        /**
+         *  Initialize state
+         *  send the user to the login page
+         */
             .state('init', {
                 url: "/init",
                 abstract: true,
@@ -55,6 +63,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 controller: 'initCtrl'
             })
 
+        /**
+         * Login page state
+         *  in case they've logged out.
+         */
             .state('init.login', {
                 url: "/login",
                 views: {
@@ -65,6 +77,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 access: {requiredLogin: false}
             })
 
+        /**
+         * The base app controller state
+         * - Provides the menu
+         */
             .state('app', {
                 url: "/app",
                 abstract: true,
@@ -72,7 +88,9 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 controller: 'appCtrl'
             })
 
-
+        /**
+         * Search state
+         */
             .state('app.search', {
                 url: "/search",
                 views: {
@@ -85,6 +103,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
             })
 
+        /**
+         * Currently, view all available boards
+         * TODO: remove this, and include this functionality into the search
+         */
             .state('app.publishedboards', {
                 url: "/pubboards",
                 views: {
@@ -97,6 +119,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
             })
 
+        /**
+         * Viewing Posts state
+         *  used when looking at a board that is not yours
+         */
             .state('app.viewposts', {
                 url: "/viewposts",
                 views: {
@@ -109,6 +135,10 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
             })
 
+        /**
+         * View Friends state
+         * See the list of friends attached to the current user.
+         */
             .state('app.viewfriends', {
                 url: "/viewfriends",
                 views: {
@@ -121,6 +151,11 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
             })
 
+        /**
+         * My Board state
+         * the 'homepage' of the app
+         * - view posts that have been made to your board
+         */
             .state('app.myBoard', {
                 url: "/myBoard",
                 views: {
@@ -145,7 +180,13 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
             });
 
-        // if none of the above states are matched, use this as the fallback
+        /**
+         * Fallback
+         *  In case the user is attempting to access
+         *  a page that might not exist, or etc.
+         *  send them to myBoard if they're logged in
+         *  or login page if they're not.
+         */
         $urlRouterProvider.otherwise(function () {
             if (typeof localStorage.jwttoken === 'undefined') {
                 return 'init/login';

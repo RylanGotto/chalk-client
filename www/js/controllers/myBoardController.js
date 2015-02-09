@@ -6,7 +6,7 @@
 angular.module('myBoard.controller', [])
 
     .controller('myBoardCtrl',
-    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
+    function myBoardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicLoading, $ionicViewService,
                          $cordovaToast, BoardService, PostService, AuthenticationService, localstorage, $cordovaCamera) {
 
         if (AuthenticationService.isLogged) {
@@ -15,10 +15,10 @@ angular.module('myBoard.controller', [])
 
             serviceUpdate();
 
+            // set the current view
+            UserStateService.setCurrentTag(localStorage.username + "\'s Board");
             $scope.$on('updateMyBoard', function(event, payload) { serviceUpdate(); }); //Listen for gcm updates
 
-            
-         
             //Having trouble turning into a service.
             $scope.takePicture = function () {
                 var options = {
@@ -38,47 +38,63 @@ angular.module('myBoard.controller', [])
                 }, function (err) {
                     // An error occured. Show a message to the user
                 });
-            }
+            };
 
+            /**
+             * Load the addPost modal
+             */
             $ionicModal.fromTemplateUrl('templates/modals/addPost.html', {
                 scope: $scope
             }).then(function (modal) {
                 $scope.modal.addPost = modal;
             });
 
-            // Open the addpost modal
+            /**
+             * Open the addPost Modal
+             */
             $scope.addPost = function () {
                 $scope.modal.addPost.show();
 
             };
 
+            /**
+             * Blank objs to be filled in by user
+             * @type {{}}
+             */
             $scope.addPostData = {};
             $scope.addBoardData = {};
 
-            $scope.fillTagField = function () {
-                $scope.addBoardData.boardTag = localStorage.username + "'s Board";
-            }
-
+            /**
+             * Assemble the data inputted and send to the PostService for saving
+             */
             $scope.doAddPost = function () {
+                $scope.showLoading();
                 var newPostData = {
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
                     timeout: $scope.addPostData.timeout,
-                    tag: $scope.addBoardData.boardTag,
+                    tag: UserStateService.getCurrentTag(),
                     img: $scope.imgURI
                 };
 
-                PostService.addPost(newPostData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
-                    $scope.fromServer = data.message;
-                    serviceUpdate();
-
-                }).error(function (data, status, headers, config) {
-                    $scope.fromServer = data.message;
-                });
-
-                $timeout(function () {
-                    $scope.closeAddPost();
-                }, 20000);
+                PostService.addPost(newPostData)
+                    .success(function (data, status, headers, config) {
+                        $scope.closeAddPost();
+                        $scope.hideLoading();
+                        $scope.fromServer = data.message;
+                        serviceUpdate();
+                        BoardService.getBoardByTag($scope.polingTag)
+                            .success(function (data, status, headers, config) {
+                                $scope.posts = data;
+                            })
+                            .error(function (data, status, headers, config) {
+                                console.log(data.message);
+                            });
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.hideLoading();
+                        $scope.fromServer = data.message;
+                    });
             };
 
             // Close open add post modal
@@ -88,13 +104,51 @@ angular.module('myBoard.controller', [])
 
         }
 
-        $scope.deletePost = function (id, posts) {
-            for (i = 0; i < posts.length; i++) {
-                if (posts[i]._id === id) {
-                    posts.splice(i, 1);
-                    $scope.myPosts = posts;
+        /**
+         * Shows an 'Action sheet' (slide up menu)
+         * when a post is clicked.
+         */
+        $scope.showPostActions = function(id, owner) {
+
+            // Show the action sheet
+            var hideSheet = $ionicActionSheet.show({
+                titleText: 'Post Options',
+                buttons: [
+                    { text: 'Reply' },
+                ],
+                destructiveText: 'Delete',
+                cancelText: 'Cancel',
+                cancel: function() {
+                    hideSheet();
+                },
+                buttonClicked: function(index) {
+                    switch (index) {
+                        case 0:
+                            UserStateService.setCurrentTag(owner + '\'s Board');
+                            $location.path("/app/viewposts");
+                            break;
+                    }
+                    return true;
+                },
+                destructiveButtonClicked: function() {
+                    $scope.deletePost(id);
+                    hideSheet();
                 }
-                PostService.deletePost(id, localstorage.get("token", 0)).success(function () {
+            });
+        };
+
+        /**
+         * Loop through the posts, find the given id and
+         * use the PostService to delete the post.
+         * @param id
+         * @param posts
+         */
+        $scope.deletePost = function (id) {
+            for (i = 0; i < $scope.myPosts.length; i++) {
+                if ($scope.myPosts[i]._id === id) {
+                    $scope.myPosts.splice(i, 1);
+                }
+                PostService.deletePost(id).success(function () {
                     console.log("removed");
                 }).error(function () {
                     console.log("not removed!");
@@ -130,5 +184,20 @@ angular.module('myBoard.controller', [])
                 alert(data.message);
             });
         }
+
+        /**
+         * Show loading animation & block user input
+         */
+        $scope.showLoading = function() {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+        };
+        /**
+         * hide loading animation
+         */
+        $scope.hideLoading = function(){
+            $ionicLoading.hide();
+        };
 
     });

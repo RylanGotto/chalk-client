@@ -2,7 +2,7 @@
     <ion-header-bar>
         <h1 class="title">Add Post</h1>
         <div class="buttons">
-            <button class="button button-clear" ng-click="closeAddPost()">Close</button>
+            <button class="button button-clear" ng-click="closeAddPost()"><i class="icon ion-close-round"></i></button>
         </div>
     </ion-header-bar>
     <ion-content>
@@ -13,12 +13,16 @@
                     <textarea ng-model="addPostData.content" />
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">Tag</span>
-                    <textarea ng-model="addBoardData.boardTag" />
-                </label>
-                <label class="item item-input">
-                    <span class="input-label">Timeout Time</span>
-                    <input ng-model="addPostData.timeout" type="number">
+                    <span class="input-label">Lifespan</span>
+                    <select ng-model="addPostData.timeout">
+                        <option value="1">1 Min</option>
+                        <option value="10">10 Min</option>
+                        <option value="60">1 hr</option>
+                        <option value="360">6 hrs</option>
+                        <option value="1440">1 Day</option>
+                        <option value="10080">1 Week</option>
+                        <option value="43200">1 Month</option>
+                    </select>
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Privacy Level</span>
@@ -28,23 +32,6 @@
                     <option>Friends</option>
                 </select>
                     </label>
-
-                <ul class="list">
-                    <li class="item item-checkbox">
-                        <label ng-click="fillTagField()" class="checkbox">
-                            <input type="checkbox">
-                        </label>
-                        Post to my Board
-                    </li>
-                    <li ng-click="addBoard()" class="item item-checkbox">
-                        <label class="checkbox">
-                            <input type="checkbox">
-                        </label>
-                        Create a new Board
-                    </li>
-
-
-                </ul>
                 <label class="item">
                     <button class="button button-block button-positive" type="submit">Post</button>
                 </label>
