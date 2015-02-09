@@ -8,7 +8,7 @@ angular.module('board.controller', [])
 
     .controller('boardCtrl',
     function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $cordovaToast, $ionicViewService,
-                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, localstorage) {
+                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, $ionicLoading, localstorage) {
 
 
         $scope.modal = {};
@@ -53,7 +53,7 @@ angular.module('board.controller', [])
 
             if(UserStateService.getReply() ){
                 $timeout(function(){
-                    $scope.modal.addPost.show();
+                    $scope.addPost();
                     UserStateService.setReply(false);
                 }, 300);
 
@@ -64,6 +64,7 @@ angular.module('board.controller', [])
             $scope.addBoardData.boardTag = UserStateService.getCurrentTag();
 
             $scope.doAddPost = function () {
+                $scope.showLoading();
                 var newPostData = {
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
@@ -73,6 +74,8 @@ angular.module('board.controller', [])
                 };
 
                 PostService.addPost(newPostData, localstorage.get("token", 0)).success(function (data, status, headers, config) {//Save new post
+                    $scope.closeAddPost();
+                    $scope.hideLoading();
                     $scope.fromServer = data.message;
                     serviceUpdate(); //update view for real time'nesss!
                    
@@ -126,6 +129,18 @@ angular.module('board.controller', [])
             });
 
         }
+
+        $scope.showLoading = function() {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+        };
+        /**
+         * hide loading animation
+         */
+        $scope.hideLoading = function(){
+            $ionicLoading.hide();
+        };
 
 
     });
