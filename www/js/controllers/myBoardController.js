@@ -12,8 +12,10 @@ angular.module('myBoard.controller', [])
         if (AuthenticationService.isLogged) {
             $scope.modal = {};
             $scope.username = localstorage.get("username", 0);
+
             serviceUpdate();
-            $scope.$on('postToMyBoard', function(event, payload) { serviceUpdate(); });
+
+            $scope.$on('updateMyBoard', function(event, payload) { serviceUpdate(); }); //Listen for gcm updates
 
             
          

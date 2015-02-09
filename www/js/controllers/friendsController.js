@@ -13,7 +13,7 @@ angular.module('friends.controller', [])
             $scope.username = localstorage.get("username", 0);
             serviceUpdate(); //Mandatory service update
 
-
+            $scope.$on('updateFriends', function(event, payload) { serviceUpdate(); }); //Listen for GCM updates
 
             $scope.viewBoard = function (tag) { //view a friends board posts on click
 

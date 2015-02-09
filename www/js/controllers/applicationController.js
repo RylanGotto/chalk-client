@@ -150,12 +150,10 @@ angular.module('app.controller', [])
 
                 switch (payload.type) {
                     case "0": //new post on my board
-                        $scope.$broadcast('postToMyBoard', "");
-                        if ($state.current.url === "/myBoard") { //Check if user is currently already on myboard
+                        $scope.$broadcast('postToMyBoard', ""); //broad cast a newpost and run the related service update
+                        $cordovaToast.showShortCenter('New Post!');//if they are show a toast notification
+                        if (!$state.current.url === "/myBoard") { //Check if user is currently already on myboard
 
-                            $cordovaToast.showShortCenter('New Post!');//if they are show a toast notification
-
-                        } else {
                             $location.path("/app/myBoard"); //else redirect them to myBoard and remove back button
                             $ionicViewService.nextViewOptions({
                                 disableBack: true
@@ -164,19 +162,14 @@ angular.module('app.controller', [])
                         }
                         break;
                     case "1": //friend has accpeted friend request
-                        $timeout(function () {
-                            $scope.newFriendCount = $scope.newFriendCount + 1;
-                        });
+
+
+
                         break;
                     case "2":
-                        if ($state.current.url === "/viewfriends") {
-                            $cordovaToast.showShortBottom(payload.username + ' sent a friend request');
+                        $scope.$broadcast('updateFriends', "");
+                        $cordovaToast.showShortBottom('You have a friend request');
 
-                        } else {
-                            $timeout(function () {
-                                $scope.newFriendCount = $scope.newFriendCount + 1;
-                            });
-                        }
                         $timeout(function () {
                             $scope.showNewFriendDiv = true;
                             $scope.requester = payload.username;
