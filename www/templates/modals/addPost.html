@@ -12,6 +12,15 @@
                     <span class="input-label">Post</span>
                     <textarea ng-model="addPostData.content" />
                 </label>
+                <div ng-if="imgURI !== undefined">
+                    <div class="item item-text-wrap">
+                        <img ng-src="{{imgURI}}" class="img-responsive">
+                    </div>
+                </div>
+                <label class="item item-input">
+                    <span class="input-label">Add Photo</span>
+                    <button class="button icon-left ion-camera" ng-click="takePicture()">Take Picture</button>
+                </label>
                 <label class="item item-input">
                     <span class="input-label">Lifespan</span>
                     <select ng-model="addPostData.timeout">
@@ -37,15 +46,6 @@
                 </label>
             </div>
         </form>
-        <label class="item item-input">
-            <button class="button" ng-click="takePicture()">Take Picture</button>
-        </label>
-        <div class="card">
-            <div class="item item-text-wrap">
-                <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-                <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-            </div>
-        </div>
         <div class="card">
             <div class="item item-text-wrap">
                 {{fromServer}}
