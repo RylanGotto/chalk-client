@@ -27,7 +27,7 @@ angular.module('data.services', ['ngResource'])
      * provides functionality to add board, retrieve boards
      */
     .factory('BoardService', function ($http) {
- var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+var serverUrl = "http://slightyused.info:8080";
 
 
         return {
@@ -46,10 +46,9 @@ angular.module('data.services', ['ngResource'])
 
                 return $http.get(serverUrl + '/api/myboard');
             },
-            getBoardByTag: function(tag, token){
+            getBoardByTag: function(tag, timestamp, token){
                 $http.defaults.headers.common['x-auth'] = token;
-
-                return $http.get(serverUrl + '/api/boards/' + tag);
+                return $http.post(serverUrl + '/api/test', {tag:tag,timestamp: timestamp});
             }
 
         }
@@ -60,7 +59,7 @@ angular.module('data.services', ['ngResource'])
      * provides functionality to add and delete posts
      */
     .factory('PostService', function ($http) {
- var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+var serverUrl = "http://slightyused.info:8080";
 
 
         return {
@@ -82,7 +81,7 @@ angular.module('data.services', ['ngResource'])
      * as well as handles friend requests
      */
     .factory('UserDataService', function ($http) {
- var serverUrl = "https://mighty-fortress-8853.herokuapp.com";
+var serverUrl = "http://slightyused.info:8080";
 
         return {
             getUserInfo: function(token){

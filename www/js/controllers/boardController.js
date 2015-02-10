@@ -13,11 +13,13 @@ angular.module('board.controller', [])
 
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
-
+            serviceUpdate(0);
 
 
             $scope.username = localstorage.get("username", 0);
-            serviceUpdate(); //Mandatory services update
+
+             //Mandatory services update
+
 
             $scope.takePicture = function () {
                 var options = {
@@ -77,7 +79,7 @@ angular.module('board.controller', [])
                     $scope.closeAddPost();
                     $scope.hideLoading();
                     $scope.fromServer = data.message;
-                    serviceUpdate(); //update view for real time'nesss!
+                   // serviceUpdate(); //update view for real time'nesss!
                    
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
@@ -99,36 +101,52 @@ angular.module('board.controller', [])
         $scope.addPostData.timeout = 1;
         $scope.addPostData.privacyLevel = "Private";
 
-        function serviceUpdate(){
 
+
+        function serviceUpdate(timestamp) {
+            var timestamp = timestamp;
             //Update the board currently being viewed, UserStateService supplies us with the current tag we are on.
             //UserStateService does is not concered with the my board tag.
-            BoardService.getBoardByTag(UserStateService.getCurrentTag(), localstorage.get("token", 0)).success(function (data, status, headers, config) {
+            BoardService.getBoardByTag(UserStateService.getCurrentTag(), timestamp, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $timeout(function () {
+                    if(data.posts) {
+                        // Setting the client side timeout for each post.
+                        data.posts.forEach(function (post) {
+                            post.visible = true;
+                            post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
+                            post.onTimeout = function () {
+                                post.counter--;
+                                if (post.counter > 0) {
+                                    posttimeout = $timeout(post.onTimeout, 1000);
+                                } else {
+                                    console.log('time up');
+                                    post.visible = false;
+                                    post = null;
+                                }
+                            };
+                            var posttimeout = $timeout(post.onTimeout, 1000);
+                        });
+                        timestamp = data.timestamp;
+                        console.log(data.posts);
+                        $scope.posts = data.posts;
+                        $timeout(function () {
+                            console.log(timestamp);
+                            serviceUpdate(timestamp);
+                        }, 1000);
 
-                    // Setting the client side timeout for each post.
-                    data.forEach(function (post) {
-                        post.visible = true;
-                        post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
-                        post.onTimeout = function () {
-                            post.counter--;
-                            if (post.counter > 0) {
-                                posttimeout = $timeout(post.onTimeout, 1000);
-                            } else {
-                                console.log('time up');
-                                post.visible = false;
-                                post = null;
-                            }
-                        };
-                        var posttimeout = $timeout(post.onTimeout, 1000);
-                    });
-                    $scope.posts = data;
+                    }
+
                 });
             }).error(function (data, status, headers, config) {
+                $timeout(function () {
+                    console.log(timestamp);
+                    serviceUpdate(timestamp);
+                }, 1000);
                 console.log(data.message);
             });
-
         }
+
+
 
         $scope.showLoading = function() {
             $ionicLoading.show({
