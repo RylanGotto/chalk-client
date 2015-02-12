@@ -48,7 +48,7 @@ var serverUrl = "http://slightyused.info:8080";
             },
             getBoardByTag: function(tag, timestamp, token){
                 $http.defaults.headers.common['x-auth'] = token;
-                return $http.post(serverUrl + '/api/test', {tag:tag,timestamp: timestamp});
+                return $http.post(serverUrl + '/api/board', {tag:tag, timestamp: timestamp});
             }
 
         }
@@ -138,8 +138,7 @@ var serverUrl = "http://slightyused.info:8080";
                 return $http.post(serverUrl + '/api/push/subscribe', deviceInfo);
             },
             unregisterUserDevice: function(){
-                $http.defaults.headers.common['x-auth'] = token;
-                return $http.post(serverUrl + '/api/push/unsubscribe', deviceInfo);
+
             }
 
 
