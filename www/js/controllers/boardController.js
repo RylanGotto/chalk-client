@@ -16,6 +16,20 @@ angular.module('board.controller', [])
             serviceUpdate(0);
 
 
+// Cancel interval on page changes
+            $scope.$on('$destroy', function(){ //Detroy long polling by cancelling timeouts and stopping recursive calls.
+                if (angular.isDefined(promise1)) {
+                    $timeout.cancel(promise1);
+                    serviceUpdate = undefined;
+                }
+                if (angular.isDefined(promise2)) {
+                    $timeout.cancel(promise2);
+                    serviceUpdate = undefined;
+                }
+
+            });
+
+
             $scope.username = localstorage.get("username", 0);
 
              //Mandatory services update
@@ -101,7 +115,8 @@ angular.module('board.controller', [])
         $scope.addPostData.timeout = 1;
         $scope.addPostData.privacyLevel = "Private";
 
-
+        var promise1;
+        var promise2;
 
         function serviceUpdate(timestamp) {
             var timestamp = timestamp;
@@ -129,7 +144,7 @@ angular.module('board.controller', [])
                         timestamp = data.timestamp;
                         console.log(data.posts);
                         $scope.posts = data.posts;
-                        $timeout(function () {
+                        promise1 = $timeout(function () {
                             console.log(timestamp);
                             serviceUpdate(timestamp);
                         }, 1000);
@@ -138,7 +153,7 @@ angular.module('board.controller', [])
 
                 });
             }).error(function (data, status, headers, config) {
-                $timeout(function () {
+               promise2 = $timeout(function () {
                     console.log(timestamp);
                     serviceUpdate(timestamp);
                 }, 1000);

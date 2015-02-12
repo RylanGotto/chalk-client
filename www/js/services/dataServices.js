@@ -132,6 +132,14 @@ var serverUrl = "http://slightyused.info:8080";
             deleteUser: function(token){
                 $http.defaults.headers.common['x-auth'] = token;
                 return $http.delete(serverUrl + '/api/users/' + localStorage.userid);
+            },
+            registerUserDevice: function(token, deviceInfo){
+                $http.defaults.headers.common['x-auth'] = token;
+                return $http.post(serverUrl + '/api/push/subscribe', deviceInfo);
+            },
+            unregisterUserDevice: function(){
+                $http.defaults.headers.common['x-auth'] = token;
+                return $http.post(serverUrl + '/api/push/unsubscribe', deviceInfo);
             }
 
 

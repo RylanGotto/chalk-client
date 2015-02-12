@@ -83,14 +83,7 @@ angular.module('myBoard.controller', [])
                         $scope.hideLoading();
                         $scope.fromServer = data.message;
                         serviceUpdate();
-                        console.log(UserStateService.getCurrentTag());
-                        BoardService.getBoardByTag(UserStateService.getCurrentTag(), localstorage.get("token", 0))
-                            .success(function (data, status, headers, config) {
-                                $scope.posts = data;
-                            })
-                            .error(function (data, status, headers, config) {
-                                console.log(data.message);
-                            });
+
                     })
                     .error(function (data, status, headers, config) {
                         $scope.hideLoading();

@@ -191,7 +191,9 @@ angular.module('app.controller', [])
                     if (notification.event == "registered") {
                         $scope.regId = notification.regid;
                         console.log('device id ' + notification.regid)
-                        storeDeviceToken("android");
+                        var deviceInfo = {type: "android", token: $scope.regId};
+                        UserDataService.registerUserDevice(localstorage.get("token", 0), deviceInfo);
+
                     }
                     else if (notification.event == "message") {
                         gcmHandler(notification.payload);
@@ -239,59 +241,7 @@ angular.module('app.controller', [])
                 }
             }
 
-            // Stores the device token in a db using chalkserver (running locally in this case)
-            //
-            // type:  Platform type (ios, android etc)
-            function storeDeviceToken(type) {
-                console.log("Reached store device");
-                // Create a random userid to store with it
-                console.log($scope.username);
-                var user = {user: $scope.username, type: type, token: $scope.regId};
-                console.log("Post token for registered device with data " + JSON.stringify(user));
-                $http.defaults.headers.common['x-auth'] = localStorage.token;
-                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/subscribe", JSON.stringify(user))
-                    .success(function (data, status) {
-                        console.log("Token stored, device is successfully subscribed to receive push notifications.");
-                    })
-                    .error(function (data, status) {
-                        console.log("Error storing device token." + data + " " + status)
-                    }
-                );
-            }
 
-            // Removes the device token from the db via node-pushserver API unsubscribe (running locally in this case).
-            // If you registered the same device with different userids, *ALL* will be removed. (It's recommended to register each
-            // time the app opens which this currently does. However in many cases you will always receive the same device token as
-            // previously so multiple userids will be created with the same token unless you add code to check).
-            function removeDeviceToken() {
-                var tkn = {"token": $scope.regId};
-                $http.post("https://mighty-fortress-8853.herokuapp.com/api/push/unsubscribe", JSON.stringify(tkn))
-                    .success(function (data, status) {
-                        console.log("Token removed, device is successfully unsubscribed and will not receive push notifications.");
-                    })
-                    .error(function (data, status) {
-                        console.log("Error removing device token." + data + " " + status)
-                    }
-                );
-            }
-
-
-            // Unregister - Unregister your device token from APNS or GCM
-            // Not recommended:  See http://developer.android.com/google/gcm/adv.html#unreg-why
-            //                   and https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/index.html#//apple_ref/occ/instm/UIApplication/unregisterForRemoteNotifications
-            //
-            // ** Instead, just remove the device token from your db and stop sending notifications **
-            $scope.unregister = function () {
-                console.log("Unregister called");
-                removeDeviceToken();
-                $scope.registerDisabled = false;
-                //need to define options here, not sure what that needs to be but this is not recommended anyway
-//        $cordovaPush.unregister(options).then(function(result) {
-//            console.log("Unregister success " + result);//
-//        }, function(err) {
-//            console.log("Unregister error " + err)
-//        });
-            }
 
 
         }
