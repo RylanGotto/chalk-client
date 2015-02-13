@@ -83,13 +83,7 @@ angular.module('myBoard.controller', [])
                         $scope.hideLoading();
                         $scope.fromServer = data.message;
                         serviceUpdate();
-                        BoardService.getBoardByTag($scope.polingTag)
-                            .success(function (data, status, headers, config) {
-                                $scope.posts = data;
-                            })
-                            .error(function (data, status, headers, config) {
-                                console.log(data.message);
-                            });
+
                     })
                     .error(function (data, status, headers, config) {
                         $scope.hideLoading();
@@ -103,7 +97,8 @@ angular.module('myBoard.controller', [])
             };
 
         }
-
+        $scope.addPostData.timeout = 1;
+        $scope.addPostData.privacyLevel = "Private";
         /**
          * Shows an 'Action sheet' (slide up menu)
          * when a post is clicked.
@@ -145,11 +140,12 @@ angular.module('myBoard.controller', [])
          * @param posts
          */
         $scope.deletePost = function (id) {
+            var tag =  $scope.username + "'s Board";
             for (i = 0; i < $scope.myPosts.length; i++) {
                 if ($scope.myPosts[i]._id === id) {
                     $scope.myPosts.splice(i, 1);
                 }
-                PostService.deletePost(id).success(function () {
+                PostService.deletePost(id, tag, localstorage.get("token", 0)).success(function () {
                     console.log("removed");
                 }).error(function () {
                     console.log("not removed!");

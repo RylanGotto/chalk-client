@@ -6,9 +6,14 @@
     <ion-item nav-clear menu-close ng-click="addPost()">
                 Add Post
             </ion-item>
+        <ion-item nav-clear menu-close ng-click="addFriend(username)">
+            <button class="button button-positive">
+                Send friend request
+            </button>
+        </ion-item>
         <ion-list>
-            <ion-item ng-repeat="post in posts">
-                        <ion-item ng-repeat="k in post.posts | orderBy:'dateCreated':true">
+            <ion-item>
+                        <ion-item ng-repeat="k in posts | orderBy:'dateCreated':true">
                             <div class="list card">
 
 

@@ -8,16 +8,32 @@ angular.module('board.controller', [])
 
     .controller('boardCtrl',
     function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $cordovaToast, $ionicViewService,
-                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, localstorage) {
+                       PostService, BoardService, UserStateService, UserDataService, AuthenticationService, $cordovaCamera, $ionicLoading, localstorage) {
 
 
         $scope.modal = {};
         if (AuthenticationService.isLogged) {
+            serviceUpdate(0);
 
+
+// Cancel interval on page changes
+            $scope.$on('$destroy', function(){ //Detroy long polling by cancelling timeouts and stopping recursive calls.
+                if (angular.isDefined(promise1)) {
+                    $timeout.cancel(promise1);
+                    serviceUpdate = undefined;
+                }
+                if (angular.isDefined(promise2)) {
+                    $timeout.cancel(promise2);
+                    serviceUpdate = undefined;
+                }
+
+            });
 
 
             $scope.username = localstorage.get("username", 0);
-            serviceUpdate(); //Mandatory services update
+
+             //Mandatory services update
+
 
             $scope.takePicture = function () {
                 var options = {
@@ -53,7 +69,7 @@ angular.module('board.controller', [])
 
             if(UserStateService.getReply() ){
                 $timeout(function(){
-                    $scope.modal.addPost.show();
+                    $scope.addPost();
                     UserStateService.setReply(false);
                 }, 300);
 
@@ -64,6 +80,7 @@ angular.module('board.controller', [])
             $scope.addBoardData.boardTag = UserStateService.getCurrentTag();
 
             $scope.doAddPost = function () {
+                $scope.showLoading();
                 var newPostData = {
                     content: $scope.addPostData.content,
                     privacyLevel: $scope.addPostData.privacyLevel,
@@ -73,8 +90,10 @@ angular.module('board.controller', [])
                 };
 
                 PostService.addPost(newPostData, localstorage.get("token", 0)).success(function (data, status, headers, config) {//Save new post
+                    $scope.closeAddPost();
+                    $scope.hideLoading();
                     $scope.fromServer = data.message;
-                    serviceUpdate(); //update view for real time'nesss!
+                   // serviceUpdate(); //update view for real time'nesss!
                    
                 }).error(function (data, status, headers, config) {
                     $scope.fromServer = data.message;
@@ -93,36 +112,79 @@ angular.module('board.controller', [])
 
         }
 
-        function serviceUpdate(){
+        $scope.addFriend = function (friendname) {
+            var newFriendData = {
+                friendusername: friendname
+            };
+            UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
 
+            }).error(function (data, status, headers, config) {
+
+            });
+        }
+
+        $scope.addPostData.timeout = 1;
+        $scope.addPostData.privacyLevel = "Private";
+
+        var promise1;
+        var promise2;
+
+        function serviceUpdate(timestamp) {
+            var timestamp = timestamp;
             //Update the board currently being viewed, UserStateService supplies us with the current tag we are on.
             //UserStateService does is not concered with the my board tag.
-            BoardService.getBoardByTag(UserStateService.getCurrentTag(), localstorage.get("token", 0)).success(function (data, status, headers, config) {
+            BoardService.getBoardByTag(UserStateService.getCurrentTag(), timestamp, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $timeout(function () {
+                    if(data.posts) {
+                        // Setting the client side timeout for each post.
+                        data.posts.forEach(function (post) {
+                            post.visible = true;
+                            post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
+                            post.onTimeout = function () {
+                                post.counter--;
+                                if (post.counter > 0) {
+                                    posttimeout = $timeout(post.onTimeout, 1000);
+                                } else {
+                                    console.log('time up');
+                                    post.visible = false;
+                                    post = null;
+                                }
+                            };
+                            var posttimeout = $timeout(post.onTimeout, 1000);
+                        });
+                        timestamp = data.timestamp;
+                        console.log(data.posts);
+                        $scope.posts = data.posts;
+                        promise1 = $timeout(function () {
+                            console.log(timestamp);
+                            serviceUpdate(timestamp);
+                        }, 1000);
 
-                    // Setting the client side timeout for each post.
-                    data.forEach(function (post) {
-                        post.visible = true;
-                        post.counter = Math.floor((post.dateCreated + post.timeout - Date.now()) / 1000);
-                        post.onTimeout = function () {
-                            post.counter--;
-                            if (post.counter > 0) {
-                                posttimeout = $timeout(post.onTimeout, 1000);
-                            } else {
-                                console.log('time up');
-                                post.visible = false;
-                                post = null;
-                            }
-                        };
-                        var posttimeout = $timeout(post.onTimeout, 1000);
-                    });
-                    $scope.posts = data;
+                    }
+
                 });
             }).error(function (data, status, headers, config) {
+               promise2 = $timeout(function () {
+                    console.log(timestamp);
+                    serviceUpdate(timestamp);
+                }, 1000);
                 console.log(data.message);
             });
-
         }
+
+
+
+        $scope.showLoading = function() {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+        };
+        /**
+         * hide loading animation
+         */
+        $scope.hideLoading = function(){
+            $ionicLoading.hide();
+        };
 
 
     });

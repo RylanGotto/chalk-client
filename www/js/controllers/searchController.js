@@ -7,7 +7,7 @@ angular.module('search.controller', [])
 
     .controller('searchCtrl',
     function searchCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $ionicViewService,
-                        BoardService, PostService, UserDataService, AuthenticationService, localstorage) {
+                        BoardService, PostService, UserStateService, UserDataService, AuthenticationService, localstorage) {
 
 
         $scope.modal = {};
@@ -15,15 +15,19 @@ angular.module('search.controller', [])
             serviceUpdate();
 
 
-            $scope.addFriend = function (friendname) {
-                var newFriendData = {
-                    friendusername: friendname
-                };
-                UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
-                  
-                }).error(function (data, status, headers, config) {
 
+
+            $scope.viewBoard = function (tag) { //view a friends board posts on click
+
+                $location.path("/app/viewposts");
+                UserStateService.setCurrentTag(tag);
+
+                BoardService.getBoardByTag(tag, localstorage.get("token", 0)).success(function (data, status, headers, config) {
+                    $scope.posts = data;
+                }).error(function (data, status, headers, config) {
+                    console.log(data.message);
                 });
+
             }
 
             function serviceUpdate(){

@@ -5,20 +5,14 @@
     <ion-content class="has-header">
         <ion-list>
             <ion-item ng-repeat="user in users">
-                <div class="card">
-                    <div class="item item-text-wrap">
-                        <a href="" ng-click="addFriend(user.username)" class="row">
-                            <div>
-                                <img src="http://placehold.it/150x150"/>
-                            </div>
-                            <div>
-                                <p>
-                                    Add {{user.username}}
-                                </p>
-                            </div>
-                        </a>
+                <a href="" ng-click="viewBoard(user.username + '\'s Board')">
+                    <div class="list card">
+                        <div class="item item-avatar">
+                            <img src="http://placehold.it/140x100">
+                            {{user.username}}
+                        </div>
                     </div>
-                </div>
+                </a>
             </ion-item>
         </ion-list>
     </ion-content>
