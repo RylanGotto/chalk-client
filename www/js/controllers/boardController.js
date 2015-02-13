@@ -8,7 +8,7 @@ angular.module('board.controller', [])
 
     .controller('boardCtrl',
     function boardCtrl($scope, $location, $window, $timeout, $interval, $ionicModal, $cordovaToast, $ionicViewService,
-                       PostService, BoardService, UserStateService, AuthenticationService, $cordovaCamera, $ionicLoading, localstorage) {
+                       PostService, BoardService, UserStateService, UserDataService, AuthenticationService, $cordovaCamera, $ionicLoading, localstorage) {
 
 
         $scope.modal = {};
@@ -110,6 +110,17 @@ angular.module('board.controller', [])
             };
 
 
+        }
+
+        $scope.addFriend = function (friendname) {
+            var newFriendData = {
+                friendusername: friendname
+            };
+            UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
+
+            }).error(function (data, status, headers, config) {
+
+            });
         }
 
         $scope.addPostData.timeout = 1;

@@ -67,9 +67,9 @@ var serverUrl = "http://slightyused.info:8080";
                 $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/posts', newPostData);
             },
-            deletePost: function(postId, token){
+            deletePost: function(postId, tag, token){
                 $http.defaults.headers.common['x-auth'] = token;
-                return $http.delete(serverUrl + '/api/posts/' + postId);
+                return $http.delete(serverUrl + '/api/posts/' + postId, {tag:tag});
             }
 
         }

@@ -127,7 +127,7 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 url: "/viewposts",
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/viewPosts.html",
+                        templateUrl: "templates/viewBoard.html",
                         controller: 'boardCtrl'
                     }
                 },

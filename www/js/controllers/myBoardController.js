@@ -140,11 +140,12 @@ angular.module('myBoard.controller', [])
          * @param posts
          */
         $scope.deletePost = function (id) {
+            var tag =  $scope.username + "'s Board";
             for (i = 0; i < $scope.myPosts.length; i++) {
                 if ($scope.myPosts[i]._id === id) {
                     $scope.myPosts.splice(i, 1);
                 }
-                PostService.deletePost(id, localstorage.get("token", 0)).success(function () {
+                PostService.deletePost(id, tag, localstorage.get("token", 0)).success(function () {
                     console.log("removed");
                 }).error(function () {
                     console.log("not removed!");

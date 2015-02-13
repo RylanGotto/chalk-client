@@ -6,6 +6,11 @@
     <ion-item nav-clear menu-close ng-click="addPost()">
                 Add Post
             </ion-item>
+        <ion-item nav-clear menu-close ng-click="addFriend(username)">
+            <button class="button button-positive">
+                Send friend request
+            </button>
+        </ion-item>
         <ion-list>
             <ion-item>
                         <ion-item ng-repeat="k in posts | orderBy:'dateCreated':true">
@@ -13,7 +18,6 @@
 
 
                                     <div class="item item-avatar">
-                                        {{k}}
                                         <img src="http://placehold.it/140x100">
                                         <h2>{{k.owner}}</h2>
                                         <p>Posted at: {{k.dateCreated | date:'hh:mm:ss' : 'UTC'}}</p>
