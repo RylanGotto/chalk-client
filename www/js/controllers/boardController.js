@@ -116,6 +116,7 @@ angular.module('board.controller', [])
             var newFriendData = {
                 friendusername: friendname
             };
+            console.log(friendname);
             UserDataService.sendFriendRequest(newFriendData, localstorage.get("token", 0)).success(function (data, status, headers, config) {
 
             }).error(function (data, status, headers, config) {
@@ -136,6 +137,7 @@ angular.module('board.controller', [])
             BoardService.getBoardByTag(UserStateService.getCurrentTag(), timestamp, localstorage.get("token", 0)).success(function (data, status, headers, config) {
                 $timeout(function () {
                     if(data.posts) {
+                        $scope.boardOwnerName = data.owner;
                         // Setting the client side timeout for each post.
                         data.posts.forEach(function (post) {
                             post.visible = true;
