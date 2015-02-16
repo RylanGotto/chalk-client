@@ -105,10 +105,26 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
 
         /**
          * Currently, view all available boards
-         * TODO: remove this, and include this functionality into the search
+         *
          */
-            .state('app.publishedboards', {
-                url: "/pubboards",
+            .state('app.publishedBoards', {
+                url: "/pubBoards",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/publishedBoards.html",
+                        controller: 'publishedCtrl'
+                    }
+                },
+                access: {requiredLogin: true}
+
+            })
+
+        /**
+         * Currently, view all available boards
+         *
+         */
+            .state('app.publicBoards', {
+                url: "/publicBoards",
                 views: {
                     'menuContent': {
                         templateUrl: "templates/publishedBoards.html",
@@ -123,8 +139,8 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
          * Viewing Posts state
          *  used when looking at a board that is not yours
          */
-            .state('app.viewposts', {
-                url: "/viewposts",
+            .state('app.viewBoard', {
+                url: "/viewBoard",
                 views: {
                     'menuContent': {
                         templateUrl: "templates/viewBoard.html",
@@ -139,8 +155,8 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
          * View Friends state
          * See the list of friends attached to the current user.
          */
-            .state('app.viewfriends', {
-                url: "/viewfriends",
+            .state('app.viewFriends', {
+                url: "/viewFriends",
                 views: {
                     'menuContent': {
                         templateUrl: "templates/viewFriends.html",

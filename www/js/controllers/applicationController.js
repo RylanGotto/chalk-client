@@ -50,7 +50,7 @@ angular.module('app.controller', [])
                 }).error(function (data, status, headers, config) {
                     alert(data.message);
                 });
-                $location.path("/app/viewfriends");
+                $location.path("/app/viewFriends");
             }
 
 

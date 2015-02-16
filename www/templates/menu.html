@@ -22,14 +22,17 @@
         <ion-item nav-clear menu-close href="#/app/search">
           Search for Friends
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/viewfriends">
+        <ion-item nav-clear menu-close href="#/app/viewFriends">
           My Friends <span ng-if="newFriendCount > 0">( {{newFriendCount}} ) </span>
         </ion-item>
         <ion-item nav-clear menu-close ng-click="addBoard()">
           Make Board
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/pubboards">
+        <ion-item nav-clear menu-close href="#/app/pubBoards">
           Published Boards
+        </ion-item>
+        <ion-item nav-clear menu-close href="#/app/publicBoards">
+          Public Boards
         </ion-item>
         <ion-item nav-clear menu-close ng-click="logout()">
           Logout

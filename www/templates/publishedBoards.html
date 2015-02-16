@@ -1,9 +1,9 @@
-<ion-view title="My Published Boards">
-    <ion-nav-buttons side="left">
+<ion-view title="{{data.title}}">
+    <ion-nav-buttons side="left" >
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header">
-            <ion-item nav-clear menu-close ng-click="addBoard()">
+            <ion-item nav-clear menu-close ng-click="addBoard()" ng-show="data.showDiv">
                 Publish Board
             </ion-item>
         <ion-list>

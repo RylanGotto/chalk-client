@@ -49,6 +49,10 @@ var serverUrl = "http://slightyused.info:8080";
             getBoardByTag: function(tag, timestamp, token){
                 $http.defaults.headers.common['x-auth'] = token;
                 return $http.post(serverUrl + '/api/board', {tag:tag, timestamp: timestamp});
+            },
+            getPublicBoards: function(token){
+                $http.defaults.headers.common['x-auth'] = token;
+                return $http.post(serverUrl + '/api/publicBoards');
             }
 
         }

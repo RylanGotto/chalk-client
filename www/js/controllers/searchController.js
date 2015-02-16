@@ -29,14 +29,12 @@ angular.module('search.controller', [])
                     $scope.data.users = [];
                     $scope.data.boards = [];
                 }
-                
-
             }
 
 
             $scope.viewBoard = function (tag) { //view a users board on click
 
-                $location.path("/app/viewposts");
+                $location.path("/app/viewBoard");
                 UserStateService.setCurrentTag(tag);
 
                 BoardService.getBoardByTag(tag, localstorage.get("token", 0)).success(function (data, status, headers, config) {
