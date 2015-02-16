@@ -30,7 +30,7 @@ angular.module('init.controller', [])
                 var dataObj = {
                     username: $scope.regData.username,
                     password: $scope.regData.password,
-                    firstname: $scope.regData.fristname,
+                    firstname: $scope.regData.firstname,
                     lastname: $scope.regData.lastname,
                     email: $scope.regData.email,
                     img: $scope.imgURI

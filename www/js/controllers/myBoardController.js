@@ -98,7 +98,7 @@ angular.module('myBoard.controller', [])
 
         }
         $scope.addPostData.timeout = 1;
-        $scope.addPostData.privacyLevel = "Private";
+        $scope.addPostData.privacyLevel = "Friends"
         /**
          * Shows an 'Action sheet' (slide up menu)
          * when a post is clicked.

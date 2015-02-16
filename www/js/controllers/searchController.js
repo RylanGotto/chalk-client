@@ -10,14 +10,31 @@ angular.module('search.controller', [])
                         BoardService, PostService, UserStateService, UserDataService, AuthenticationService, localstorage) {
 
 
-        $scope.modal = {};
+
         if (AuthenticationService.isLogged) {
-            serviceUpdate();
+            $scope.modal = {};
+            $scope.data = { users:[], boards: [], search: ''};
+
+            $scope.search = function() {
+                if($scope.data.search.length != 0 && $scope.data.search.length > 2){//Dont query unless there are three characters match
+                    var searchInfo = {searchQuery : $scope.data.search};//search username, firstname, lastname, and board tag for a match
+                    UserDataService.search(searchInfo, localstorage.get("token", 0)).success(function(data){
+                        $scope.data.users = data.users;
+                        $scope.data.boards = data.boards;
+                    }).error(function(){
+                        $scope.data.users = ['Problems with the server at this time.'];
+
+                    });
+                }else{
+                    $scope.data.users = [];
+                    $scope.data.boards = [];
+                }
+                
+
+            }
 
 
-
-
-            $scope.viewBoard = function (tag) { //view a friends board posts on click
+            $scope.viewBoard = function (tag) { //view a users board on click
 
                 $location.path("/app/viewposts");
                 UserStateService.setCurrentTag(tag);
@@ -30,15 +47,7 @@ angular.module('search.controller', [])
 
             }
 
-            function serviceUpdate(){
-                UserDataService.getAllUsers(localstorage.get("token", 0)).success(function (data, status, headers, config) {
-                    $timeout(function () {
-                        $scope.users = data;
-                    });
-                }).error(function (data, status, headers, config) {
-                    alert(data.message);
-                });
-            }
+
 
         }
 
