@@ -6,7 +6,7 @@ angular.module('phoneContacts.controller', [])
     .controller('phoneContactsCtrl',
         function phoneContactsCtrl(
             $scope, AuthenticationService, $ionicLoading,
-            $cordovaContacts, $ionicPlatform) {
+            $cordovaContacts, $location, $ionicScrollDelegate) {
 
             /**
              * Show loading animation & block user input
@@ -57,7 +57,6 @@ angular.module('phoneContacts.controller', [])
                 function pruneMissingContacts(result) {
                     var actualContacts = [];
                     for(var i = 0; i < result.length; i++) {
-
                         if( result[i].name && result[i].displayName && result[i].emails ) {
                             actualContacts.push(result[i]);
                         }
@@ -74,5 +73,16 @@ angular.module('phoneContacts.controller', [])
                 $scope.sendOutsiderFriendRequest = function(contact) {
                     console.log(contact);
                 }
+
+                /**
+                 * Jump to points in an alphabetized list
+                 * @param id
+                 */
+                $scope.gotoList = function(id){
+                    $location.hash(id);
+                    $ionicScrollDelegate.anchorScroll();
+                }
+
+                $scope.alphabet = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".split(',');
             }
         });
