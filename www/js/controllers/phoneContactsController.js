@@ -36,8 +36,9 @@ angular.module('phoneContacts.controller', [])
                         fields: ['name', 'displayName', 'emails'],
                         filter: ''
                     }).then(function(result) {
-                        // prune out the bad contacts
-                        $scope.contacts = pruneMissingContacts(result);
+                        result = pruneMissingContacts(result);
+                        result = alphabetizeContacts(result);
+                        $scope.contacts = result;
                     }, function(error) {
                         $scope.hideLoading();
                         console.log("ERROR: " + error);
@@ -63,6 +64,22 @@ angular.module('phoneContacts.controller', [])
                     }
                     $scope.hideLoading();
                     return actualContacts;
+                }
+
+                /**
+                 * Split the array into their alphabetic positions
+                 * @param contacts Array - result of pruneMissingContacts
+                 */
+                function alphabetizeContacts(contacts) {
+                    var tmp={};
+                    for(var i = 0 ; i < contacts.length; i++) {
+                        var letter = contacts[i].displayName.toUpperCase().charAt(0);
+                        if( tmp[letter] == undefined ) {
+                            tmp[letter] = [];
+                        }
+                        tmp[letter].push( contacts[i] );
+                    }
+                    return tmp;
                 }
 
                 /**
