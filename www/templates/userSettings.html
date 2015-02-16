@@ -22,8 +22,11 @@
                         <span class="input-label">Email</span>
                         <input type="text" ng-model="updateData.email">
                     </label>
+                    <label class="item item-input">
+                        <button class="button icon-left ion-person-add" ng-click="addPhoneContacts()">Add Phone Contacts</button>
+                    </label>
                     <label class="item item-input item-stacked-label">
-                        <span class="input-label">Max post time on myBoard</span>
+                        <span class="input-label">Max post time<br>on My Board</span>
                         <input number="text" min="0" ng-model="updateData.maxTTL">
                     </label>
                     <label class="item item-input item-stacked-label">

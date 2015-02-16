@@ -27,7 +27,7 @@ angular.module('init.services', ['ngResource'])
     })
 
     .factory('UserLoginService', function ($http) {
-var serverUrl = "http://slightyused.info:8080";
+var serverUrl = "http://mighty-fortress-8853.herokuapp.com";
         return {
             logIn: function (username, password) {
                 return $http.post(serverUrl + '/api/auth/login', {username: username, password: password});
@@ -41,7 +41,7 @@ var serverUrl = "http://slightyused.info:8080";
 
 
     .factory('RegistrationService', function ($http) {
-var serverUrl = "http://slightyused.info:8080";
+var serverUrl = "http://mighty-fortress-8853.herokuapp.com";
         return {
             register: function (regInfo) {
                 return $http.post(serverUrl + '/api/auth/register', regInfo);

@@ -178,6 +178,18 @@ angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.
                 },
                 access: {requiredLogin: true}
 
+            })
+
+            .state('app.phoneContacts', {
+                url: "/phoneContacts",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/contacts.html",
+                        controller: 'phoneContactsCtrl'
+                    }
+                },
+                access: {requiredLogin: true}
+
             });
 
         /**

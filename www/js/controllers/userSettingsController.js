@@ -41,6 +41,14 @@ angular.module('userSettings.controller', [])
                 });
             }
 
+            /**
+             * Directing user to add phone contacts page
+             * @controller phoneContactsController
+             */
+            $scope.addPhoneContacts = function() {
+                $location.path("/app/phoneContacts");
+            }
+
 
 
             $scope.deleteAccount = function(){

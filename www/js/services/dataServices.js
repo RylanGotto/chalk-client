@@ -27,7 +27,7 @@ angular.module('data.services', ['ngResource'])
      * provides functionality to add board, retrieve boards
      */
     .factory('BoardService', function ($http) {
-var serverUrl = "http://slightyused.info:8080";
+var serverUrl = "http://mighty-fortress-8853.herokuapp.com";
 
 
         return {
@@ -59,7 +59,7 @@ var serverUrl = "http://slightyused.info:8080";
      * provides functionality to add and delete posts
      */
     .factory('PostService', function ($http) {
-var serverUrl = "http://slightyused.info:8080";
+var serverUrl = "http://mighty-fortress-8853.herokuapp.com";
 
 
         return {
@@ -81,7 +81,7 @@ var serverUrl = "http://slightyused.info:8080";
      * as well as handles friend requests
      */
     .factory('UserDataService', function ($http) {
-var serverUrl = "http://slightyused.info:8080";
+var serverUrl = "http://mighty-fortress-8853.herokuapp.com";
 
         return {
             getUserInfo: function(token){
