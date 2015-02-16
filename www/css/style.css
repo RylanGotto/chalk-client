@@ -33,6 +33,11 @@ h1, h2, h3, h4, h5, h6, p {
     color: #DBD4CE;
 }
 
+em {
+    font-style: italic;
+    color: #6C7A89;
+}
+
 /* = Login Page
 -----------------------------------------------------------------------------*/
 #welcomeScreen {

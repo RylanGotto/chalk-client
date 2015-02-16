@@ -1,19 +1,15 @@
-<ion-view title="Phone Contacts">
+<ion-view title="Contacts">
     <ion-nav-buttons side="left">
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-content class="has-header">
-        <ion-list>
-            <ion-item ng-repeat="contact in contacts">
-                <a href="" ng-click="sendOutsiderFriendRequest()">
-                    <div class="list card">
-                        <div class="item item-avatar">
-                            <img src="http://placehold.it/140x100">
-                            {{contact.displayName}}
-                        </div>
-                    </div>
-                </a>
-            </ion-item>
-        </ion-list>
+        <ul class="list">
+            <li class="item item-checkbox" ng-repeat="contact in contacts | orderBy:'displayName'">
+                <label class="checkbox">
+                    <input type="checkbox">
+                </label>
+                {{contact.displayName}} (<em ng-repeat="email in contact.emails">{{email.value}}</em>)
+            </li>
+        </ul>
     </ion-content>
 </ion-view>

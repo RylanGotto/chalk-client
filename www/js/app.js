@@ -1,5 +1,9 @@
-angular.module('chalk', ['ionic', 'init.controller', 'app.controller', 'myBoard.controller', 'board.controller', 'search.controller',
-    'publishedBoards.controller', 'friends.controller', 'init.services', 'userSettings.controller', 'data.services', 'ngCordova'])
+angular.module('chalk',
+    ['ionic', 'init.controller', 'app.controller',
+        'myBoard.controller', 'board.controller', 'search.controller',
+        'publishedBoards.controller', 'friends.controller', 'init.services',
+        'userSettings.controller', 'data.services', 'ngCordova',
+        'phoneContacts.controller'])
 
     .run(function ($ionicPlatform, $rootScope, $location, $ionicViewService, AuthenticationService) {
 	$ionicPlatform.ready(function () {
